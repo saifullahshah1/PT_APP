@@ -1,11 +1,17 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pt_app/utils/utils.dart';
+import '../../data/db.dart';
 import '../../model/class.dart';
 import '../../model/student.dart';
 import '../fitness_test_screen.dart';
 
 class KmRunScreen extends StatefulWidget {
+  final int testType;
+
+  KmRunScreen({Key? key, required this.testType}) : super(key: key);
+
   @override
   _KmRunScreenState createState() => _KmRunScreenState();
 }
@@ -64,12 +70,6 @@ class _KmRunScreenState extends State<KmRunScreen> {
     }); // To refresh the UI after loading data
   }
 
-  Student _getStudentData() {
-    final selectedStudent = _getSelectedClassStudents()!
-        .firstWhere((student) => student.regNo == _selectedRegNo);
-    return selectedStudent;
-  }
-
   void startTimer() {
     setState(() {
       isTimerRunning = true;
@@ -98,7 +98,6 @@ class _KmRunScreenState extends State<KmRunScreen> {
     });
   }
 
-
   bool _checkAllStudentsOnLap4() {
     final students = _getSelectedClassStudents();
     if (students == null) return false;
@@ -109,116 +108,40 @@ class _KmRunScreenState extends State<KmRunScreen> {
     }
     return true;
   }
-  void _storeDataInDb(List<Student> students) {
-    for (var student in students) {
-      // Update only if the student's level is 4
-      if (student.level == 4) {
-        // Store the current time in seconds
-        final updatedStudent = student.copyWith(runTime: duration.inSeconds);
 
-        // Update the student in the list
-        final selectedStudents = _getSelectedClassStudents()!;
-        final index = selectedStudents.indexWhere((s) => s.regNo == student.regNo);
-        if (index != -1) {
-          selectedStudents[index] = updatedStudent;
-        }
-      }
-    }
-
+  Future<void> _storeDataInDb(List<Student> students) async {
     print("Size: ${students.length}");
     for (var student in students) {
-      print("Storing data in the database for student: ${student.regNo} \t ${student.level} \t ${student.runTime}");
+      print(
+          "Storing data in the database for student: ${student.regNo} \t ${student.level} \t ${student.runTime}");
     }
 
-    // Store the data in the database
-    // Example: await database.saveStudents(students);
+    //Store the data in the database
+    await DatabaseHelper.instance.saveStudents(students, widget.testType);
   }
 
-  // void updateStudentLevel(Student student, int newLevel) {
-  //   setState(() {
-  //     student.level = newLevel;
-  //
-  //     // Update the color based on the current lap value
-  //     selectedColors[student.regNo] = _getColorForLevel(student.level);
-  //
-  //     // Reset dataStored if a student is deselected from level 4
-  //     if (dataStored && student.level < 4) {
-  //       dataStored = false;
-  //     }
-  //   });
-  // }
-
-  // void updateStudentLevel(Student student, int newLevel) {
-  //   if (newLevel >= 0 && newLevel <= 4) {
-  //     student.level = newLevel;
-  //     switch (newLevel) {
-  //       case 0:
-  //         selectedColors[student.regNo] = const Color(0xffF1F1F1);
-  //         break;
-  //       case 1:
-  //         selectedColors[student.regNo] = const Color(0xffA9A1FF);
-  //         break;
-  //       case 2:
-  //         selectedColors[student.regNo] = const Color(0xffFFA36F);
-  //         break;
-  //       case 3:
-  //         selectedColors[student.regNo] = const Color(0xff434343);
-  //         break;
-  //       case 4:
-  //         selectedColors[student.regNo] = const Color(0xffFF7D7D);
-  //         break;
-  //     }
-  //   }
-  // }
-
-
-
-  // void _handleStudentSelection(Student student) {
-  //   setState(() {
-  //     _selectedRegNo = student.regNo;
-  //     selectedStudent = student;
-  //     selectedColors.putIfAbsent(student.regNo, () => const Color(0xffF1F1F1));
-  //
-  //     // Increment lap level only if it's less than 4
-  //     if (student.level < 4) {
-  //       student.level++;
-  //
-  //       // Update color based on the new level
-  //       switch (student.level) {
-  //         case 1:
-  //           selectedColors[student.regNo] = const Color(0xffA9A1FF);
-  //           break;
-  //         case 2:
-  //           selectedColors[student.regNo] = const Color(0xffFFA36F);
-  //           break;
-  //         case 3:
-  //           selectedColors[student.regNo] = const Color(0xff434343);
-  //           break;
-  //         case 4:
-  //           selectedColors[student.regNo] = const Color(0xffFF7D7D);
-  //           break;
-  //       }
-  //     }
-  //
-  //     if (_checkAllStudentsOnLap4() && !dataStored) {
-  //       _storeDataInDb(_getSelectedClassStudents()!);
-  //       dataStored = true;
-  //     }
-  //   });
-  // }
-
   void _handleStudentSelection(Student student) {
+    if (student.level == 4) {
+      setState(() {
+        _selectedRegNo = student.regNo;
+        selectedStudent = student;
+      });
+      return;
+    }
+
     setState(() {
       _selectedRegNo = student.regNo;
-      selectedStudent = student;
       selectedColors.putIfAbsent(student.regNo, () => const Color(0xffF1F1F1));
 
       // Increment lap level only if it's less than 4
-      if (student.level < 4) {
-        student.level++;
+      if (student.level < 4 && student.level >= 0) {
+        student = student.copyWith(level: student.level + 1);
 
         // Update color based on the new level
         switch (student.level) {
+          case 0:
+            selectedColors[student.regNo] = const Color(0xffF1F1F1);
+            break;
           case 1:
             selectedColors[student.regNo] = const Color(0xffA9A1FF);
             break;
@@ -230,23 +153,81 @@ class _KmRunScreenState extends State<KmRunScreen> {
             break;
           case 4:
             selectedColors[student.regNo] = const Color(0xffFF7D7D);
-
-            // Store the current time in seconds when level reaches 4
-            selectedStudent = selectedStudent!.copyWith(runTime: duration.inSeconds);
             break;
         }
       }
 
+      // Update the selectedStudent after changing the level
+      selectedStudent = student.copyWith(
+          runTime: student.level == 4 ? duration.inSeconds : student.runTime);
+      // Update the student in the list
+      final selectedStudents = _getSelectedClassStudents()!;
+      final index =
+          selectedStudents.indexWhere((s) => s.regNo == student.regNo);
+      if (index != -1) {
+        selectedStudents[index] = selectedStudent!;
+      }
+
       if (_checkAllStudentsOnLap4() && !dataStored) {
-        _storeDataInDb(_getSelectedClassStudents()!);
         dataStored = true;
+        _storeDataInDb(_getSelectedClassStudents()!);
       }
     });
   }
 
+  void _handleUndo() {
+    setState(() {
+      final selectedStudents = _getSelectedClassStudents();
+      if (selectedStudents != null && _selectedRegNo != null) {
+        final index =
+            selectedStudents.indexWhere((s) => s.regNo == _selectedRegNo);
+        if (index != -1) {
+          Student student = selectedStudents[index];
 
+          // Undo operation: decrement level and update color
+          if (student.level > 0) {
+            student = student.copyWith(level: student.level - 1);
+            switch (student.level) {
+              case 0:
+                selectedColors[student.regNo] = const Color(0xffF1F1F1);
+                break;
+              case 1:
+                selectedColors[student.regNo] = const Color(0xffA9A1FF);
+                break;
+              case 2:
+                selectedColors[student.regNo] = const Color(0xffFFA36F);
+                break;
+              case 3:
+                selectedColors[student.regNo] = const Color(0xff434343);
+                break;
+            }
+          }
 
+          // Update the selected student and store in list
+          selectedStudents[index] = student;
+          selectedStudent = student; // Update selectedStudent
 
+          // Reset dataStored flag if needed
+          if (dataStored) {
+            dataStored = false;
+          }
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Reset the levels and colors
+    final students = _getSelectedClassStudents();
+    if (students != null) {
+      for (var student in students) {
+        student.level = 0;
+      }
+    }
+    selectedColors.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,77 +254,111 @@ class _KmRunScreenState extends State<KmRunScreen> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Classes
-              const SizedBox(height: 5.0),
-              const Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Class",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
+              // Row for Class Selection and Filters
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Left Half - Class Selection
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: const Color(0xffF1F1F1),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: selectedClass,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedClass = newValue;
-                              _selectedRegNo = null;
-                              selectedStudent = null;
-                            });
-                          },
-                          items: classes.map<DropdownMenuItem<String>>((Class classItem) {
-                            return DropdownMenuItem<String>(
-                              value: classItem.className,
-                              child: Text(
-                                classItem.className,
-                                style: const TextStyle(fontSize: 14.0),
-                              ),
-                            );
-                          }).toList(),
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Class",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: const Color(0xffF1F1F1),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: selectedClass,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedClass = newValue;
+                                        _selectedRegNo = null;
+                                        selectedStudent = null;
+                                      });
+                                    },
+                                    items: classes
+                                        .map<DropdownMenuItem<String>>(
+                                            (Class classItem) {
+                                      return DropdownMenuItem<String>(
+                                        value: classItem.className,
+                                        child: Text(
+                                          classItem.className,
+                                          style:
+                                              const TextStyle(fontSize: 14.0),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  // Right Half - Filters
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Filters",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        // Add your filter widgets here as needed
+                        // Example filter widget:
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Implement filter logic
+                          },
+                          child: const Text('Apply Filters'),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 10.0),
 
-              // Reg No.'s
-              const Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Reg No.",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 20.0),
+
+              // Rest of the Widgets Below Class Selection and Filters
+              const Text(
+                "Reg No.",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
               ),
               const SizedBox(height: 10),
               SizedBox(
@@ -359,7 +374,8 @@ class _KmRunScreenState extends State<KmRunScreen> {
                   itemBuilder: (context, index) {
                     final students = _getSelectedClassStudents()!;
                     final student = students[index];
-                    Color boxColor = selectedColors[student.regNo] ?? const Color(0xffF1F1F1);
+                    Color boxColor = selectedColors[student.regNo] ??
+                        const Color(0xffF1F1F1);
 
                     return GestureDetector(
                       onTap: () => _handleStudentSelection(student),
@@ -378,7 +394,9 @@ class _KmRunScreenState extends State<KmRunScreen> {
                           child: Text(
                             '${student.regNo}',
                             style: TextStyle(
-                              color: boxColor == const Color(0xffF1F1F1) ? Colors.black : Colors.white,
+                              color: boxColor == const Color(0xffF1F1F1)
+                                  ? Colors.black
+                                  : Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -389,34 +407,14 @@ class _KmRunScreenState extends State<KmRunScreen> {
                 ),
               ),
 
-
-
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Buttons
-
               Row(
                 children: [
-                  /*_buildLevelButton('L-1', colors[0], () {
-                    // Action for L-1 button
-                  }),
-                  const SizedBox(width: 2.0),
-                  _buildLevelButton('L-2', colors[1], () {
-                    // Action for L-2 button
-                  }),
-                  const SizedBox(width: 2.0),
-                  _buildLevelButton('L-3', colors[2], () {
-                    // Action for L-3 button
-                  }),
-                  const SizedBox(width: 2.0),
-                  _buildLevelButton('L-4', colors[3], () {
-                    // Action for L-4 button
-                  }),*/
                   const SizedBox(width: 2.0),
                   ElevatedButton(
-                    onPressed: () {
-                      // Action for this button (if any)
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffF1F1F1),
                       elevation: 0,
@@ -432,39 +430,20 @@ class _KmRunScreenState extends State<KmRunScreen> {
                   const SizedBox(width: 2),
 
                   // Undo Button
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       if (selectedStudent != null) {
-                  //         // Ensure the lap value does not go below zero
-                  //         if (selectedStudent!.level > 0) {
-                  //           updateStudentLevel(selectedStudent!, selectedStudent!.level - 1);
-                  //
-                  //           // If the level was 4 and now is not, reset dataStored
-                  //           if (selectedStudent!.level < 4) {
-                  //             dataStored = false;
-                  //           }
-                  //         }
-                  //       }
-                  //     });
-                  //   },
-                  //   style: ElevatedButton.styleFrom(backgroundColor: colors[5]),
-                  //   child: const Padding(
-                  //     padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  //     child: Text(
-                  //       'Undo',
-                  //       style: TextStyle(color: Colors.white),
-                  //     ),
-                  //   ),
-                  // ),
-
-
-
+                  ElevatedButton(
+                    onPressed: _handleUndo,
+                    style: ElevatedButton.styleFrom(backgroundColor: colors[5]),
+                    child: const Padding(
+                      padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                      child: Text(
+                        'Undo',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
-
-
 
               // Timer
               _buildTimer(),

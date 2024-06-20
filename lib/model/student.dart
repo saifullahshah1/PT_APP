@@ -16,7 +16,7 @@ class Student {
   final int pullUpReps;
   final double shuttleRunSec;
   final int runTime;
-  int level = 0;
+  int level;
   final String pftTestDate;
 
   Student({
@@ -35,6 +35,7 @@ class Student {
     required this.shuttleRunSec,
     required this.runTime,
     required this.pftTestDate,
+    this.level = 0,
   });
 
 
@@ -87,6 +88,7 @@ class Student {
     double? shuttleRunSec,
     int? runTime,
     String? pftTestDate,
+    int? level,
   }) {
     return Student(
       regNo: regNo ?? this.regNo,
@@ -104,6 +106,7 @@ class Student {
       shuttleRunSec: shuttleRunSec ?? this.shuttleRunSec,
       runTime: runTime ?? this.runTime,
       pftTestDate: pftTestDate ?? this.pftTestDate,
+      level: level ?? this.level,
     );
   }
 }

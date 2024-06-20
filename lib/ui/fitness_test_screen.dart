@@ -234,7 +234,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             SitAndReachScreen(testType: widget.testType),
         '/pullUp': (context) => PullUpScreen(testType: widget.testType),
         '/shuttleRun': (context) => ShuttleRunScreen(testType: widget.testType),
-        '/run': (context) => KmRunScreen(),
+        '/run': (context) => KmRunScreen(testType: widget.testType),
       },
     );
   }
@@ -286,51 +286,49 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final schoolId = prefs.getString('schoolId' ?? '');
 
-    for (var classItem in classes) {
-      for (var student in classItem.students) {
-        if (schoolId != '') {
-          final path = (widget.testType == 1)
-              ? "https://13.49.228.139/api/schools/$schoolId/students"
-              : "https://13.49.228.139/api/schools/$schoolId/mock/students";
+    if (schoolId != '') {
+      final path = (widget.testType == 1)
+          ? "https://13.49.228.139/api/schools/$schoolId/students"
+          : "https://13.49.228.139/api/schools/$schoolId/mock/students";
 
-          final response = await http.post(
-            // Uri.parse("http://192.168.10.13:5002/api/schools/h2r8B2O4Ivsza5YrPWE5/students"),
-            Uri.parse(path),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode({
-              'id': student.regNo.toString(),
-              'name': student.name,
-              'class': student.classVal,
-              'gender': student.gender,
-              'dob': student.dob,
-              'attendanceStatus': student.attendanceStatus,
-              'sitUpReps': student.sitUpReps,
-              'broadJumpCm': student.broadJumpCm,
-              'sitAndReachCm': student.sitAndReachCm,
-              'pullUpReps': student.pullUpReps,
-              'shuttleRunSec': student.shuttleRunSec,
-              'runTime': student.runTime,
-              'pftTestDate': student.pftTestDate,
-              'uploadDate': student.pftTestDate,
-            }),
-          );
+      List<Map<String, dynamic>> studentsData = [];
 
-          if (response.statusCode == 201) {
-            print('Student ${student.name} data synced successfully.');
-          } else {
-            print(
-                'Failed to sync student ${student.name} data.\n${response.statusCode}\n${response.body}');
-          }
-        } else {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid School Id!')),
-          );
-          print('Invalid School Id!');
+      for (var classItem in classes) {
+        for (var student in classItem.students) {
+          studentsData.add({
+            'id': student.regNo.toString(),
+            'name': student.name,
+            'class': student.classVal,
+            'gender': student.gender,
+            'dob': student.dob,
+            'attendanceStatus': student.attendanceStatus,
+            'sitUpReps': student.sitUpReps,
+            'broadJumpCm': student.broadJumpCm,
+            'sitAndReachCm': student.sitAndReachCm,
+            'pullUpReps': student.pullUpReps,
+            'shuttleRunSec': student.shuttleRunSec,
+            'runTime': student.runTime,
+            'pftTestDate': student.pftTestDate,
+            'uploadDate': student.pftTestDate,
+          });
         }
       }
+
+      final response = await http.post(
+        Uri.parse(path),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(studentsData),
+      );
+
+      if (response.statusCode == 201) {
+        print('All student data synced successfully.');
+      } else {
+        print('Failed to sync data.\n${response.statusCode}\n${response.body}');
+      }
+    } else {
+      print('Invalid School Id!');
     }
 
     // Hide loading dialog

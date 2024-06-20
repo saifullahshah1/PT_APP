@@ -476,27 +476,6 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
     return 0; // Default points if no range matches
   }
 
-  // void _updateShuttleRunSec() async {
-  //   if (_selectedRegNo == null) return;
-  //
-  //   // Update the reps for the current student in the classes list
-  //   for (var classItem in classes) {
-  //     for (var i = 0; i < classItem.students.length; i++) {
-  //       if (classItem.students[i].regNo == _selectedRegNo) {
-  //         setState(() {
-  //           classItem.students[i] =
-  //               classItem.students[i].copyWith(shuttleRunSec: reps);
-  //         });
-  //
-  //         // Update the reps in the database
-  //         await DatabaseHelper.instance
-  //             .updateShuttleRunSec(classItem.students[i].regNo, reps);
-  //         return;
-  //       }
-  //     }
-  //   }
-  // }
-
   void _updateShuttleRunSec() async {
     if (_selectedRegNo == null) return;
 

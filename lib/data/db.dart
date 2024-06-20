@@ -238,4 +238,19 @@ class DatabaseHelper {
       whereArgs: [regNo],
     );
   }
+
+  Future<void> saveStudents(List<Student> students,int tableType) async {
+    final db = await instance.database;
+    final tableName = _getTableName(tableType);
+    for (var student in students) {
+      await db.update(
+        tableName,
+        {
+          'runTime': student.runTime,
+        },
+        where: 'id = ?',
+        whereArgs: [student.regNo],
+      );
+    }
+  }
 }
