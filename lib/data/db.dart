@@ -33,6 +33,7 @@ class DatabaseHelper {
   Future _createDB(Database db, int version) async {
     const studentTable = '''
     CREATE TABLE IF NOT EXISTS student (
+      no INTEGER,
       name TEXT,
       id INTEGER PRIMARY KEY,
       class TEXT,
@@ -50,6 +51,7 @@ class DatabaseHelper {
     ''';
     const mockStudentTable = '''
     CREATE TABLE IF NOT EXISTS mock_student (
+      no INTEGER,
       name TEXT,
       id INTEGER PRIMARY KEY,
       class TEXT,
@@ -92,6 +94,7 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> maps = await db.query(tableName);
     return List.generate(maps.length, (i) {
       return CsvData(
+        no: maps[i]['no'],
         name: maps[i]['name'],
         id: maps[i]['id'],
         classVal: maps[i]['class'],
@@ -121,6 +124,7 @@ class DatabaseHelper {
     );
     if (maps.isNotEmpty) {
       return CsvData(
+        no: maps[0]['no'],
         name: maps[0]['name'],
         id: maps[0]['id'],
         classVal: maps[0]['class'],
@@ -150,6 +154,7 @@ class DatabaseHelper {
     for (var map in maps) {
       String classVal = map['class'];
       CsvData data = CsvData(
+        no: map['no'],
         name: map['name'],
         id: map['id'],
         classVal: map['class'],

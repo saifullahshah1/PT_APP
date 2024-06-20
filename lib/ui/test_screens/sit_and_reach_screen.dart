@@ -35,6 +35,7 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
   bool isLoading = true; // Add this flag
   Student? selectedStudent;
   List<Map<String, dynamic>> currentPointsTable = [];
+  var tapBack = false;
 
   @override
   void initState() {
@@ -103,6 +104,18 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
       );
     }
 
+    if (reps == 0) {
+      if (tapBack) {
+        tapBack = false;
+      } else if (selectedStudent != null && selectedStudent?.sitAndReachCm != -1) {
+        _repsController.text = selectedStudent!.sitAndReachCm.toString();
+        reps = selectedStudent!.sitAndReachCm;
+        points = calculatePoints(reps, _getPointsTable());
+      } else {
+        _repsController.clear();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sit And Reach'),
@@ -155,7 +168,7 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
               const SizedBox(height: 16),
               // Reg No. Selection
               SizedBox(
-                height: 200, // Set to a suitable height for your use case
+                height: 400, // Set to a suitable height for your use case
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -185,7 +198,7 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            '${student.regNo}',
+                            '${student.no}',
                             style: TextStyle(
                               color: _selectedRegNo == student.regNo
                                   ? Colors.white
@@ -637,6 +650,7 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
                             NumberContainer(
                               '⌫',
                                   () {
+                                    tapBack = true;
                                 setState(() {
                                   if (_repsController.text.isNotEmpty) {
                                     _repsController.text = _repsController.text
@@ -782,6 +796,17 @@ class _SitAndReachScreenState extends State<SitAndReachScreen> {
           // Update the reps in the database
           await DatabaseHelper.instance
               .updateSitAndReachReps(classItem.students[i].regNo, reps,widget.testType);
+
+          // navigate to next student if available
+          if (i < classItem.students.length - 1) {
+            setState(() {
+              _selectedRegNo = classItem.students[i + 1].regNo;
+              selectedStudent = _getStudentData();
+              reps = 0;
+              points = 0;
+              _repsController.clear();
+            });
+          }
           return;
         }
       }

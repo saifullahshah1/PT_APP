@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import '../data/csv_data.dart';
 
 class Student {
+  final int no;
   final int regNo;
   final String name;
   final int age;
@@ -20,6 +21,7 @@ class Student {
   final String pftTestDate;
 
   Student({
+    required this.no,
     required this.regNo,
     required this.name,
     required this.age,
@@ -53,6 +55,7 @@ class Student {
     }
 
     return Student(
+      no: csvData.no,
       regNo: csvData.id,
       name: csvData.name,
       age: calculateAge(csvData.dob), // Implement this function as needed
@@ -73,6 +76,7 @@ class Student {
 
   // Method to create a copy of the Student with updated fields
   Student copyWith({
+    int? no,
     int? regNo,
     String? name,
     int? age,
@@ -91,6 +95,7 @@ class Student {
     int? level,
   }) {
     return Student(
+      no: no ?? this.no,
       regNo: regNo ?? this.regNo,
       name: name ?? this.name,
       age: age ?? this.age,
