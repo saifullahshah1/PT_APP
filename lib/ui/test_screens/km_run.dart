@@ -362,7 +362,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 150,
+                height: 500,
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -392,7 +392,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            '${student.regNo}',
+                            '${student.no}',
                             style: TextStyle(
                               color: boxColor == const Color(0xffF1F1F1)
                                   ? Colors.black
@@ -422,7 +422,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        '${selectedStudent?.regNo ?? '0'} / ${selectedStudent?.level ?? 0}',
+                        '${selectedStudent?.no ?? '0'} / ${selectedStudent?.level ?? 0}',
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),

@@ -33,6 +33,7 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
   bool isLoading = true; // Add this flag
   Student? selectedStudent;
   List<Map<String, dynamic>> currentPointsTable = [];
+  var tapBack = false;
 
   @override
   void initState() {
@@ -100,6 +101,18 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
       );
     }
 
+    if (reps == 0) {
+      if (tapBack) {
+        tapBack = false;
+      } else if (selectedStudent != null && selectedStudent?.broadJumpCm != -1) {
+        _repsController.text = selectedStudent!.broadJumpCm.toString();
+        reps = selectedStudent!.broadJumpCm;
+        points = calculatePoints(reps, _getPointsTable());
+      } else {
+        _repsController.clear();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Broad Jump'),
@@ -152,7 +165,7 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
               const SizedBox(height: 16),
               // Reg No. Selection
               SizedBox(
-                height: 200, // Set to a suitable height for your use case
+                height: 400, // Set to a suitable height for your use case
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -182,7 +195,7 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            '${student.regNo}',
+                            '${student.no}',
                             style: TextStyle(
                               color: _selectedRegNo == student.regNo
                                   ? Colors.white
@@ -563,6 +576,7 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
                             NumberContainer(
                               '⌫',
                               () {
+                                tapBack = true;
                                 setState(() {
                                   if (_repsController.text.isNotEmpty) {
                                     _repsController.text = _repsController.text
@@ -707,6 +721,17 @@ class _BroadJumpScreenState extends State<BroadJumpScreen> {
           // Update the reps in the database
           await DatabaseHelper.instance
               .updateBroadJumpDistance(classItem.students[i].regNo, reps,widget.testType);
+
+          // navigate to next student if available
+          if (i < classItem.students.length - 1) {
+            setState(() {
+              _selectedRegNo = classItem.students[i + 1].regNo;
+              selectedStudent = _getStudentData();
+              reps = 0;
+              points = 0;
+              _repsController.clear();
+            });
+          }
           return;
         }
       }

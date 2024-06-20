@@ -49,53 +49,12 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     super.initState();
     print("initState");
     print("Test type: ${widget.testType}");
-    selectCsvFile();
+    loadData();
   }
 
   /** Upload CSV */
 
   List<CsvData> csvData = [];
-
-  Future<void> selectCsvFile() async {
-    bool empty = await DatabaseHelper.instance.isTableEmpty(widget.testType);
-    if (empty) {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['csv'],
-      );
-
-      if (result != null) {
-        String? filePath = result.files.single.path;
-        if (filePath != null) {
-          await parseCsv(filePath);
-
-          final dbHelper = DatabaseHelper.instance;
-          await dbHelper.insertCsvData(csvData, widget.testType);
-
-          List<CsvData> importedData =
-              await dbHelper.getAllCsvData(widget.testType);
-          setState(() {
-            csvData = importedData;
-          });
-        }
-      }
-    } else {
-      print("Already have data in db");
-    }
-
-    loadData();
-  }
-
-  Future<void> parseCsv(String filePath) async {
-    String csvString = await File(filePath).readAsString();
-    List<List<dynamic>> rowsAsListOfValues =
-        const CsvToListConverter().convert(csvString);
-    List<CsvData> parsedData =
-        rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
-    setState(() {
-      csvData = parsedData;
-    });
-  }
 
   void loadData() async {
     print("loadData");
@@ -296,6 +255,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       for (var classItem in classes) {
         for (var student in classItem.students) {
           studentsData.add({
+            'no': student.no,
             'id': student.regNo.toString(),
             'name': student.name,
             'class': student.classVal,
@@ -309,7 +269,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             'shuttleRunSec': student.shuttleRunSec,
             'runTime': student.runTime,
             'pftTestDate': student.pftTestDate,
-            'uploadDate': student.pftTestDate,
+            'uploadDate': DateTime.now().toString(),
           });
         }
       }
