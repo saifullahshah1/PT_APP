@@ -23,6 +23,16 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
   static const Color textColorBlack = Color(0xff0A0A0A);
 
   @override
+  void initState() {
+
+    if (classes.isNotEmpty) {
+      selectedClass = classes.first.className;
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Variables to count the number of students in each award category
     int goldCount = 0;
@@ -36,7 +46,8 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
       int broadJumpPoints = kData.calculatePoints(2, student.age, student.gender, student.broadJumpCm);
       int pullUpPoints = kData.calculatePoints(3, student.age, student.gender, student.pullUpReps);
       int sitAndReachPoints = kData.calculatePoints(4, student.age, student.gender, student.sitAndReachCm);
-      int shuttleRunPoints = kData.calculatePoints(1, student.age, student.gender, student.sitUpReps);
+      int shuttleRunPoints = kData.calculatePointsForShuttleRun(5, student.age, student.gender, student.shuttleRunSec);
+      int kmRunPoints = kData.calculatePointsForKmRun(6, student.age, student.gender, student.runTime);
 
       int totalPoints = sitUpPoints + broadJumpPoints + pullUpPoints + sitAndReachPoints + shuttleRunPoints;
 
@@ -62,6 +73,8 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
           _buildTableCell('${student.pullUpReps} ($pullUpPoints)', false, false, false, false, const Color(0xffFFDBDB)),
           _buildTableCell('${student.sitAndReachCm} ($sitAndReachPoints)', false, false, false, false, const Color(0xffE4E4E4)),
           _buildTableCell('${student.shuttleRunSec} ($shuttleRunPoints)', false, false, false, false, const Color(0xffFFE7DA)),
+          _buildTableCell('${student.runTime} ($kmRunPoints)', false, false, false, false, const Color(
+              0xffb3fbe3)),
           _buildTableCell('$totalPoints', false, true, false, true, const Color(0xffF1F1F1)),
         ],
       );
@@ -130,6 +143,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
                         _buildTableHeaderCell('Pull Up', false, false, const Color(0xffFF7D7D)),
                         _buildTableHeaderCell('Sit & Reach', false, false, const Color(0xff434343)),
                         _buildTableHeaderCell('Shuttle Run', false, false, const Color(0xffFFA36E)),
+                        _buildTableHeaderCell('Km Run', false, false, const Color(0xff00C485)),
                         _buildTableHeaderCell('Result', false, true),
                       ],
                     ),
@@ -202,12 +216,6 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
     return Container(
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.only(
-          topLeft: isTopLeft ? const Radius.circular(10.0) : Radius.zero,
-          topRight: isTopRight ? const Radius.circular(10.0) : Radius.zero,
-          bottomLeft: isFirst ? const Radius.circular(10.0) : Radius.zero,
-          bottomRight: isLast ? const Radius.circular(10.0) : Radius.zero,
-        ),
       ),
       padding: const EdgeInsets.all(8.0),
       child: Center(

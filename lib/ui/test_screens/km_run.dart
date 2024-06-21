@@ -30,14 +30,12 @@ class _KmRunScreenState extends State<KmRunScreen> {
     const Color(0xffFF7D7D),
     const Color(0xffF1F1F1),
     const Color(0xffFF5C5C),
+    const Color(0xffFF8E4F),
+    const Color(0xff33D09D),
   ];
 
-  double reps = 0;
-  final TextEditingController _repsController = TextEditingController();
-  int points = 5;
-  int totalPoints = 0;
-
-  bool _switchValue = true;
+  bool _filterValue = false;
+  bool _runOptionValue = false;
   bool isTimerRunning = false;
   Duration duration = const Duration(seconds: 0);
   Timer? timer;
@@ -48,10 +46,29 @@ class _KmRunScreenState extends State<KmRunScreen> {
 
   bool dataStored = false;
 
-  List<Student>? _getSelectedClassStudents() {
+  List<Student>? _getSelectedClassStudentsMain() {
     return classes
         .firstWhereOrNull((cls) => cls.className == selectedClass)
         ?.students;
+  }
+
+
+
+  List<Student>? _getSelectedClassStudents() {
+    List<Student>? students = classes
+        .firstWhereOrNull((cls) => cls.className == selectedClass)
+        ?.students;
+
+    if (_filterValue) {
+      if (_runOptionValue) {
+        // Students aged >= 14
+        students = students?.where((student) => student.age >= 14).toList();
+      } else {
+        // Students aged <= 13
+        students = students?.where((student) => student.age <= 13).toList();
+      }
+    }
+    return students;
   }
 
   @override
@@ -98,11 +115,11 @@ class _KmRunScreenState extends State<KmRunScreen> {
     });
   }
 
-  bool _checkAllStudentsOnLap4() {
+  bool _checkAllStudentsOnLastLap() {
     final students = _getSelectedClassStudents();
     if (students == null) return false;
     for (var student in students) {
-      if (student.level < 4) {
+      if (student.level < (_runOptionValue ? 6 : 4)) {
         return false;
       }
     }
@@ -121,56 +138,48 @@ class _KmRunScreenState extends State<KmRunScreen> {
   }
 
   void _handleStudentSelection(Student student) {
-    if (student.level == 4) {
+    int maxLevel =
+        _runOptionValue ? 6 : 4; // Determine max level based on run option
+    if (student.level == maxLevel) {
       setState(() {
         _selectedRegNo = student.regNo;
         selectedStudent = student;
       });
       return;
     }
-
     setState(() {
       _selectedRegNo = student.regNo;
       selectedColors.putIfAbsent(student.regNo, () => const Color(0xffF1F1F1));
 
-      // Increment lap level only if it's less than 4
-      if (student.level < 4 && student.level >= 0) {
-        student = student.copyWith(level: student.level + 1);
+      // Increment lap level only if it's less than the max level
+      if (student.level < maxLevel && student.level >= 0) {
+        final selectedStudents = _getSelectedClassStudents();
+        final mainStudentList = _getSelectedClassStudentsMain();
+        if (selectedStudents != null && mainStudentList != null) {
+          final index = selectedStudents.indexWhere((s) => s.regNo == student.regNo);
+          final indexMain = mainStudentList.indexWhere((s) => s.regNo == student.regNo);
+          if (index != -1 && indexMain != -1) {
+            selectedStudents[index].level++; // Update the level directly in the list
 
-        // Update color based on the new level
-        switch (student.level) {
-          case 0:
-            selectedColors[student.regNo] = const Color(0xffF1F1F1);
-            break;
-          case 1:
-            selectedColors[student.regNo] = const Color(0xffA9A1FF);
-            break;
-          case 2:
-            selectedColors[student.regNo] = const Color(0xffFFA36F);
-            break;
-          case 3:
-            selectedColors[student.regNo] = const Color(0xff434343);
-            break;
-          case 4:
-            selectedColors[student.regNo] = const Color(0xffFF7D7D);
-            break;
+            if (_runOptionValue) {
+              selectedColors[student.regNo] = _getColorForLevel(student.level);
+            } else {
+              selectedColors[student.regNo] = _getColorForLevelWithoutRunOption(student.level);
+            }
+
+            selectedStudents[index] = student.copyWith(
+              runTime: selectedStudents != null && selectedStudents.isNotEmpty && selectedStudents[index].level == maxLevel
+                  ? duration.inSeconds : student.runTime,
+            );
+            selectedStudent = selectedStudents[index];
+            mainStudentList[indexMain] = selectedStudents[index];
+          }
         }
       }
 
-      // Update the selectedStudent after changing the level
-      selectedStudent = student.copyWith(
-          runTime: student.level == 4 ? duration.inSeconds : student.runTime);
-      // Update the student in the list
-      final selectedStudents = _getSelectedClassStudents()!;
-      final index =
-          selectedStudents.indexWhere((s) => s.regNo == student.regNo);
-      if (index != -1) {
-        selectedStudents[index] = selectedStudent!;
-      }
-
-      if (_checkAllStudentsOnLap4() && !dataStored) {
+      if (_checkAllStudentsOnLastLap() && !dataStored) {
         dataStored = true;
-        _storeDataInDb(_getSelectedClassStudents()!);
+        _storeDataInDb(_getSelectedClassStudentsMain()!);
       }
     });
   }
@@ -184,36 +193,67 @@ class _KmRunScreenState extends State<KmRunScreen> {
         if (index != -1) {
           Student student = selectedStudents[index];
 
-          // Undo operation: decrement level and update color
+          // Undo operation: decrement level
           if (student.level > 0) {
-            student = student.copyWith(level: student.level - 1);
-            switch (student.level) {
-              case 0:
-                selectedColors[student.regNo] = const Color(0xffF1F1F1);
-                break;
-              case 1:
-                selectedColors[student.regNo] = const Color(0xffA9A1FF);
-                break;
-              case 2:
-                selectedColors[student.regNo] = const Color(0xffFFA36F);
-                break;
-              case 3:
-                selectedColors[student.regNo] = const Color(0xff434343);
-                break;
+            student.level -= 1;
+
+            // Update color based on level
+            if (_runOptionValue) {
+              selectedColors[student.regNo] = _getColorForLevel(student.level);
+            } else {
+              selectedColors[student.regNo] = _getColorForLevelWithoutRunOption(student.level);
             }
-          }
 
-          // Update the selected student and store in list
-          selectedStudents[index] = student;
-          selectedStudent = student; // Update selectedStudent
+            // Update the original Student object in the list
+            selectedStudents[index] = student;
+            selectedStudent = student; // Update selectedStudent
 
-          // Reset dataStored flag if needed
-          if (dataStored) {
-            dataStored = false;
+            // Ensure dataStored flag is updated
+            if (dataStored) {
+              dataStored = false;
+            }
           }
         }
       }
     });
+  }
+
+  Color _getColorForLevel(int level) {
+    switch (level) {
+      case 0:
+        return const Color(0xffF1F1F1);
+      case 1:
+        return const Color(0xffA9A1FF);
+      case 2:
+        return const Color(0xffFFA36F);
+      case 3:
+        return const Color(0xff434343);
+      case 4:
+        return const Color(0xffFF7D7D);
+      case 5:
+        return const Color(0xffFF8E4F);
+      case 6:
+        return const Color(0xff33D09D);
+      default:
+        return const Color(0xffF1F1F1); // Default color for unknown levels
+    }
+  }
+
+  Color _getColorForLevelWithoutRunOption(int level) {
+    switch (level) {
+      case 0:
+        return const Color(0xffF1F1F1);
+      case 1:
+        return const Color(0xffA9A1FF);
+      case 2:
+        return const Color(0xffFFA36F);
+      case 3:
+        return const Color(0xff434343);
+      case 4:
+        return const Color(0xffFF7D7D);
+      default:
+        return const Color(0xffF1F1F1); // Default color for unknown levels
+    }
   }
 
   @override
@@ -318,7 +358,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
                     ),
                   ),
                   const SizedBox(
-                    width: 10.0,
+                    width: 20.0,
                   ),
                   // Right Half - Filters
                   Expanded(
@@ -326,23 +366,74 @@ class _KmRunScreenState extends State<KmRunScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Filters",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
+                        // Filter Switch
+                        Row(
+                          children: [
+                            const Text(
+                              "Filter",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            const SizedBox(width: 15.0),
+                            Transform.scale(
+                              scale: 0.8,
+                              child: CupertinoSwitch(
+                                value: _filterValue,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    if (_filterValue) {
+                                      _runOptionValue = false;
+                                    }
+                                    _filterValue = value;
+                                    _selectedRegNo = null;
+                                    selectedStudent = null;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        // km Run Switch
+                        if (_filterValue) ...[
+                          Row(
+                            children: [
+                              const Text(
+                                "1.6 km",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              const SizedBox(width: 5.0),
+                              Transform.scale(
+                                scale: 0.8,
+                                child: CupertinoSwitch(
+                                  value: _runOptionValue,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _runOptionValue = value;
+                                      _selectedRegNo = null;
+                                      selectedStudent = null;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 5.0),
+                              const Text(
+                                "2.4 km",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        // Add your filter widgets here as needed
-                        // Example filter widget:
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Implement filter logic
-                          },
-                          child: const Text('Apply Filters'),
-                        ),
+                        ],
                       ],
                     ),
                   ),
@@ -351,7 +442,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
 
               const SizedBox(height: 20.0),
 
-              // Rest of the Widgets Below Class Selection and Filters
+              // Reg No.'s
               const Text(
                 "Reg No.",
                 style: TextStyle(
@@ -412,6 +503,31 @@ class _KmRunScreenState extends State<KmRunScreen> {
               // Buttons
               Row(
                 children: [
+                  _buildLevelButton('L-1', colors[0], () {
+                    // Action for L-1 button
+                  }),
+                  const SizedBox(width: 2.0),
+                  _buildLevelButton('L-2', colors[1], () {
+                    // Action for L-2 button
+                  }),
+                  const SizedBox(width: 2.0),
+                  _buildLevelButton('L-3', colors[2], () {
+                    // Action for L-3 button
+                  }),
+                  const SizedBox(width: 2.0),
+                  _buildLevelButton('L-4', colors[3], () {
+                    // Action for L-4 button
+                  }),
+                  if (_runOptionValue) ...{
+                    const SizedBox(width: 2.0),
+                    _buildLevelButton('L-5', colors[6], () {
+                      // Action for L-3 button
+                    }),
+                    const SizedBox(width: 2.0),
+                    _buildLevelButton('L-6', colors[7], () {
+                      // Action for L-4 button
+                    }),
+                  },
                   const SizedBox(width: 2.0),
                   ElevatedButton(
                     onPressed: () {},

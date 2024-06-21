@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pt_app/ui/test_screens/km_run.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/const_images.dart';
+import '../data/adminLog.dart';
 import '../data/csv_data.dart';
 import '../data/db.dart';
 import '../model/class.dart';
@@ -73,10 +74,11 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           await dbHelper.insertCsvData(csvData, widget.testType);
 
           List<CsvData> importedData =
-              await dbHelper.getAllCsvData(widget.testType);
+          await dbHelper.getAllCsvData(widget.testType);
           setState(() {
             csvData = importedData;
           });
+          adminLogCall("CSV imported");
         }
       }
     } else {
@@ -89,9 +91,9 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
   Future<void> parseCsv(String filePath) async {
     String csvString = await File(filePath).readAsString();
     List<List<dynamic>> rowsAsListOfValues =
-        const CsvToListConverter().convert(csvString);
+    const CsvToListConverter().convert(csvString);
     List<CsvData> parsedData =
-        rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
+    rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
     setState(() {
       csvData = parsedData;
     });
@@ -105,10 +107,10 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
   Future<List<Class>> fetchClassesFromDatabase() async {
     Map<String, List<CsvData>> studentDataByClass =
-        await DatabaseHelper.instance.getCsvDataGroupedByClass(widget.testType);
+    await DatabaseHelper.instance.getCsvDataGroupedByClass(widget.testType);
     List<Class> classes = studentDataByClass.entries.map((entry) {
       List<Student> students =
-          entry.value.map((csvData) => Student.fromCsvData(csvData)).toList();
+      entry.value.map((csvData) => Student.fromCsvData(csvData)).toList();
       return Class(className: entry.key, students: students);
     }).toList();
     return classes;
@@ -128,103 +130,104 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           padding: const EdgeInsets.all(8.0),
           child: _isLoading
               ? const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                  ),
-                )
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+            ),
+          )
               : Column(
-                  children: [
-                    Expanded(
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 4.0,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: 2 / 1,
-                        children: choices
-                            .map((e) => SelectCard(
-                                choice: e,
-                                onSelect: _onSelectTest,
-                                testType: widget.testType))
-                            .toList(),
+            children: [
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: 2 / 1,
+                  children: choices
+                      .map((e) =>
+                      SelectCard(
+                          choice: e,
+                          onSelect: _onSelectTest,
+                          testType: widget.testType))
+                      .toList(),
+                ),
+              ),
+              // Sync & Report Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffF1F1F1),
+                        ),
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                          if (widget.testType == 1 &&
+                              prefs.getBool('activatedUser') == false) {
+                            print('User Not Activated!');
+                          } else {
+                            syncData();
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/sync.png',
+                              width: 24,
+                              height: 24,
+                              color: Colors.black,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Sync',
+                                style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
                       ),
                     ),
-                    // Sync & Report Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffF1F1F1),
-                              ),
-                              onPressed: () async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                if (widget.testType == 1 &&
-                                    prefs.getBool('activatedUser') == false) {
-                                  print('User Not Activated!');
-                                } else {
-                                  syncData();
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/sync.png',
-                                    width: 24,
-                                    height: 24,
-                                    color: Colors.black,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text('Sync',
-                                      style: TextStyle(color: Colors.black)),
-                                ],
-                              ),
-                            ),
-                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff00C485),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xff00C485),
-                              ),
-                              onPressed: () async {
-                                // checkActivation(context,widget.testType, false);
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                if (widget.testType == 1 &&
-                                    prefs.getBool('activatedUser') == false) {
-                                  print('User Not Activated!');
-                                } else {
-                                  generateReport();
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/report.png',
-                                    width: 24,
-                                    height: 24,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text('Report',
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
+                        onPressed: () async {
+                          // checkActivation(context,widget.testType, false);
+                          SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                          if (widget.testType == 1 &&
+                              prefs.getBool('activatedUser') == false) {
+                            print('User Not Activated!');
+                          } else {
+                            generateReport();
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/report.png',
+                              width: 24,
+                              height: 24,
+                              color: Colors.white,
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            const Text('Report',
+                                style: TextStyle(color: Colors.white)),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       routes: {
@@ -248,8 +251,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     );
   }
 
-  Future<void> checkActivation(
-      BuildContext context, int testType, bool flag) async {
+  Future<void> checkActivation(BuildContext context, int testType,
+      bool flag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (testType == 1 && prefs.getBool('activatedUser') == false) {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -324,6 +327,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
       if (response.statusCode == 201) {
         print('All student data synced successfully.');
+        adminLogCall("Data Synced");
       } else {
         print('Failed to sync data.\n${response.statusCode}\n${response.body}');
       }
@@ -391,7 +395,9 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
         await dbHelper.insertCsvData(dataList, widget.testType);
 
         print('Generate report successful!!!');
-        List<CsvData> importedData = await dbHelper.getAllCsvData(widget.testType);
+        adminLogCall("Report Generated");
+        List<CsvData> importedData = await dbHelper.getAllCsvData(
+            widget.testType);
 
         setState(() {
           csvData = importedData;
@@ -400,7 +406,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
         classes = await fetchClassesFromDatabase();
 
         Navigator.of(context).pop(); // Close the dialog
-        if(widget.testType == 1){
+        if (widget.testType == 1) {
           await _generateCSV(csvData, context);
         } else {
           // Navigate to the MockTestReportScreen
@@ -413,11 +419,11 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             );
           });
         }
-
       } else {
         Navigator.of(context).pop(); // Close the dialog in case of error
         print(
-            'Failed to generate report!!!\n${response.statusCode}\n${response.body}');
+            'Failed to generate report!!!\n${response.statusCode}\n${response
+                .body}');
       }
     } else {
       Navigator.of(context).pop(); // Close the dialog in case of error
@@ -426,7 +432,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
   }
 
 
-  Future<void> _generateCSV(List<CsvData> dataList, BuildContext context) async {
+  Future<void> _generateCSV(List<CsvData> dataList,
+      BuildContext context) async {
     try {
       List<List<dynamic>> rows = [];
 
@@ -467,7 +474,26 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       });
 
       // Get external storage directory (Android) or documents directory (iOS)
-      Directory? directory = await getExternalStorageDirectory();
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = await getExternalStorageDirectory();
+        if (directory != null) {
+          String newPath = '';
+          List<String> paths = directory.path.split('/');
+          for (int i = 1; i < paths.length; i++) {
+            String pathSegment = paths[i];
+            if (pathSegment != 'Android') {
+              newPath += '/' + pathSegment;
+            } else {
+              break;
+            }
+          }
+          newPath = newPath + '/Download';
+          directory = Directory(newPath);
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
       if (directory == null) return; // Handle if directory is null
 
       // Create file path

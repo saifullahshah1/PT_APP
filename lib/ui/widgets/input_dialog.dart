@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -45,14 +44,9 @@ class _InputDialogState extends State<InputDialog> {
       actions: <Widget>[
         TextButton(
           onPressed: () async {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setBool('activatedUser', false);
             Navigator.of(context).pop();
           },
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: Colors.black),
-          ),
+          child: const Text('Cancel', style: TextStyle(color: Colors.black)),
         ),
         TextButton(
           onPressed: () {
@@ -60,10 +54,7 @@ class _InputDialogState extends State<InputDialog> {
               validateLicense(_controller.text);
             }
           },
-          child: const Text(
-            'Validate',
-            style: TextStyle(color: Colors.black),
-          ),
+          child: const Text('Validate', style: TextStyle(color: Colors.black)),
         ),
       ],
     );
@@ -85,20 +76,21 @@ class _InputDialogState extends State<InputDialog> {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
 
-      // Extract the relevant data from the response
       String licenseId = responseData['licenseId'];
       String schoolId = responseData['schoolId'];
+      String issuedDate = responseData['issuedDate'];
       String expiryDate = responseData['expiryDate'];
 
-      // Save data to shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('activatedUser', true);
       await prefs.setString('licenseId', licenseId);
       await prefs.setString('schoolId', schoolId);
+      await prefs.setString('issuedDate', issuedDate);
       await prefs.setString('expiryDate', expiryDate);
 
       print(prefs.getString('licenseId') ?? '');
       print(prefs.getString('schoolId') ?? '');
+      print(prefs.getString('issuedDate') ?? '');
       print(prefs.getString('expiryDate') ?? '');
 
       print('License Validated');

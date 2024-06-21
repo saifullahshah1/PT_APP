@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/const_images.dart';
 import '../data/db.dart';
+import '../utils/utils.dart';
 import 'settings.dart';
 import 'widgets/Choice.dart';
 import 'widgets/SelectedCard.dart';
@@ -62,12 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  DateTime getCurrentDateTime() {
-    final now = DateTime.now().toUtc();
-    final formatter = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'");
-    print("Currrent Date Time: ${formatter.format(now)}");
-    return now;
-  }
 
   void _showInputDialog(BuildContext context) async {
     final result = await showDialog<String>(

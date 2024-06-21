@@ -757,20 +757,169 @@ class KData {
     ];
   }
 
-
+  List<Map<String, dynamic>> getKmRunPointsTable() {
+    return [
+      // F
+      {
+        'age': 9,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 10:40', 'points': 5},
+          {'time': '10:40 - 11:40', 'points': 4},
+          {'time': '11:41 - 12:50', 'points': 3},
+          {'time': '12:51 - 13:50', 'points': 2},
+          {'time': '13:51 - 15:00', 'points': 1},
+          {'time': '> 15:00', 'points': 0},
+        ]
+      },
+      {
+        'age': 10,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 10:30', 'points': 5},
+          {'time': '10:30 - 11:25', 'points': 4},
+          {'time': '11:26 - 12:30', 'points': 3},
+          {'time': '12:31 - 13:25', 'points': 2},
+          {'time': '13:26 - 14:30', 'points': 1},
+          {'time': '> 14:30', 'points': 0},
+        ]
+      },
+      {
+        'age': 11,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 10:20', 'points': 5},
+          {'time': '10:20 - 11:10', 'points': 4},
+          {'time': '11:11 - 12:10', 'points': 3},
+          {'time': '12:11 - 13:25', 'points': 2},
+          {'time': '13:26 - 14:30', 'points': 1},
+          {'time': '> 14:30', 'points': 0},
+        ]
+      },
+      {
+        'age': 12,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 10:10', 'points': 5},
+          {'time': '10:10 - 11:00', 'points': 4},
+          {'time': '11:01 - 12:00', 'points': 3},
+          {'time': '12:01 - 12:50', 'points': 2},
+          {'time': '12:51 - 13:50', 'points': 1},
+          {'time': '> 13:50', 'points': 0},
+        ]
+      },
+      {
+        'age': 13,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 10:00', 'points': 5},
+          {'time': '10:00 - 10:50', 'points': 4},
+          {'time': '10:51 - 11:50', 'points': 3},
+          {'time': '11:51 - 12:40', 'points': 2},
+          {'time': '12:41 - 13:40', 'points': 1},
+          {'time': '> 13:40', 'points': 0},
+        ]
+      },
+      {
+        'age': 14,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:21', 'points': 5},
+          {'time': '14:21 - 15:20', 'points': 4},
+          {'time': '15:21 - 16:20', 'points': 3},
+          {'time': '16:21 - 17:20', 'points': 2},
+          {'time': '17:21 - 18:20', 'points': 1},
+          {'time': '> 18:20', 'points': 0},
+        ]
+      },
+      // M
+      {
+        'age': 9,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 9:40', 'points': 5},
+          {'time': '9:40 - 10:40', 'points': 4},
+          {'time': '10:41 - 11:40', 'points': 3},
+          {'time': '11:41 - 12:40', 'points': 2},
+          {'time': '12:41 - 13:50', 'points': 1},
+          {'time': '> 13:50', 'points': 0},
+        ]
+      },
+      {
+        'age': 10,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 9:30', 'points': 5},
+          {'time': '9:30 - 10:30', 'points': 4},
+          {'time': '10:31 - 11:40', 'points': 3},
+          {'time': '11:41 - 12:40', 'points': 2},
+          {'time': '12:41 - 13:40', 'points': 1},
+          {'time': '> 13:40', 'points': 0},
+        ]
+      },
+      {
+        'age': 11,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 8:50', 'points': 5},
+          {'time': '8:50 - 10:00', 'points': 4},
+          {'time': '10:01 - 11:10', 'points': 3},
+          {'time': '11:11 - 12:20', 'points': 2},
+          {'time': '12:21 - 13:30', 'points': 1},
+          {'time': '> 13:30', 'points': 0},
+        ]
+      },
+      {
+        'age': 12,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 8:40', 'points': 5},
+          {'time': '8:40 - 9:40', 'points': 4},
+          {'time': '9:41 - 10:40', 'points': 3},
+          {'time': '10:41 - 11:40', 'points': 2},
+          {'time': '11:41 - 12:30', 'points': 1},
+          {'time': '> 12:30', 'points': 0},
+        ]
+      },
+      {
+        'age': 13,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 8:10', 'points': 5},
+          {'time': '8:10 - 9:10', 'points': 4},
+          {'time': '9:11 - 10:10', 'points': 3},
+          {'time': '10:11 - 11:00', 'points': 2},
+          {'time': '11:01 - 12:00', 'points': 1},
+          {'time': '> 12:00', 'points': 0},
+        ]
+      },
+      {
+        'age': 14,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 11:01', 'points': 5},
+          {'time': '11:01 - 12:00', 'points': 4},
+          {'time': '12:01 - 13:00', 'points': 3},
+          {'time': '13:01 - 14:10', 'points': 2},
+          {'time': '14:11 - 15:20', 'points': 1},
+          {'time': '> 15:20', 'points': 0},
+        ]
+      },
+    ];
+  }
 
   List<Map<String, dynamic>> getPointsTable(int age, String gender, int featureIndex) {
     print("Beofre $age \t $gender");
     late List<Map<String, dynamic>> getFeaturePointsTable;
-    if(featureIndex == 1) {
+    if (featureIndex == 1) {
       getFeaturePointsTable = getSitUpsPointsTable();
-    } else if(featureIndex == 2) {
+    } else if (featureIndex == 2) {
       getFeaturePointsTable = getBroadJumpsPointsTable();
-    }else if(featureIndex == 3) {
+    } else if (featureIndex == 3) {
       getFeaturePointsTable = getSitAndReachPointsTable();
-    }else if(featureIndex == 4) {
+    } else if (featureIndex == 4) {
       getFeaturePointsTable = getPullUpPointsTable();
-    }else if(featureIndex == 5) {
+    } else if (featureIndex == 5) {
       getFeaturePointsTable = getShuttleRunPointsTable();
     }
 
@@ -790,7 +939,6 @@ class KData {
     return []; // Return an empty list if no matching data is found
   }
 
-
   int calculatePoints(int testNo, int age, String gender, int reps) {
     // Fetch the appropriate points table based on the testName
     List<Map<String, dynamic>> pointsTable;
@@ -807,6 +955,9 @@ class KData {
       case 4:
         pointsTable = getPullUpPointsTable();
         break;
+      case 6:
+        pointsTable = getKmRunPointsTable();
+        break;
       default:
         throw Exception("Invalid test name");
     }
@@ -819,7 +970,7 @@ class KData {
 
     // Find the correct pointsTable entry based on age and gender
     Map<String, dynamic>? tableEntry = pointsTable.firstWhere(
-          (entry) => entry['age'] == age && entry['gender'] == gender,
+      (entry) => entry['age'] == age && entry['gender'] == gender,
     );
 
     if (tableEntry == null) {
@@ -829,12 +980,51 @@ class KData {
     // Determine the points based on the reps
     int points = 0;
     List<Map<String, dynamic>> pointsTableForTest = tableEntry['pointsTable'];
-    for (var entry in pointsTableForTest) {
-      if (reps > _parseRepsRange(entry['reps'])) {
-        points = entry['points'];
-        break;
+      for (var entry in pointsTableForTest) {
+        if (reps > _parseRepsRange(entry['reps'])) {
+          points = entry['points'];
+          break;
+        }
       }
+    return points;
+  }
+
+  int calculatePointsForShuttleRun(int testNo, int age, String gender, double time) {
+    // Fetch the appropriate points table based on the testName
+    List<Map<String, dynamic>> pointsTable;
+    switch (testNo) {
+      case 5:
+        pointsTable = getShuttleRunPointsTable();
+        break;
+      default:
+        throw Exception("Invalid test name");
     }
+
+    if (age > 14) {
+      age = 14;
+    } else if (age < 9) {
+      age = 9;
+    }
+
+    // Find the correct pointsTable entry based on age and gender
+    Map<String, dynamic>? tableEntry = pointsTable.firstWhere(
+      (entry) => entry['age'] == age && entry['gender'] == gender,
+    );
+
+    if (tableEntry == null) {
+      throw Exception("No points table found for age $age and gender $gender");
+    }
+
+    // Determine the points based on the reps
+    int points = 0;
+    List<Map<String, dynamic>> pointsTableForTest = tableEntry['pointsTable'];
+
+      for (var entry in pointsTableForTest) {
+        if (_parseTimeRange(entry['time']) >= time) {
+          points = entry['points'];
+          break;
+        }
+      }
 
     return points;
   }
@@ -851,5 +1041,76 @@ class KData {
     }
   }
 
+  // Helper function to parse the time range string and return a numerical value
+  double _parseTimeRange(String rangeString) {
+    rangeString = rangeString.replaceAll('<', '').replaceAll('>', '');
+    List<String> parts = rangeString.split(' - ');
+    if (parts.length == 1) {
+      return double.parse(parts[0]);
+    } else {
+      return (double.parse(parts[0]) + double.parse(parts[1])) / 2.0;
+    }
+  }
 
+  int calculatePointsForKmRun(int testNo, int age, String gender, int runTimeInSeconds) {
+    // Fetch the appropriate points table based on the testName
+    List<Map<String, dynamic>> pointsTable;
+    switch (testNo) {
+      case 6:
+        pointsTable = getKmRunPointsTable();
+        break;
+      default:
+        throw Exception("Invalid test name");
+    }
+
+    // Adjust age if out of defined range
+    if (age > 14) {
+      age = 14;
+    } else if (age < 9) {
+      age = 9;
+    }
+
+    // Find the correct pointsTable entry based on age and gender
+    Map<String, dynamic>? tableEntry = pointsTable.firstWhere(
+          (entry) => entry['age'] == age && entry['gender'] == gender,
+    );
+
+    if (tableEntry == null) {
+      throw Exception("No points table found for age $age and gender $gender");
+    }
+
+    // Determine the points based on the runTimeInSeconds
+    int points = 0;
+    List<Map<String, dynamic>> pointsTableForTest = tableEntry['pointsTable'];
+    for (var entry in pointsTableForTest) {
+      if (_parseTimeRangeForKmRun(entry['time']) >= runTimeInSeconds.toDouble()) {
+        points = entry['points'];
+        break;
+      }
+    }
+
+    return points;
+  }
+
+
+  // Helper function to parse the time range string and return a numerical value in seconds
+  double _parseTimeRangeForKmRun(String rangeString) {
+    rangeString = rangeString.replaceAll('<', '').replaceAll('>', '');
+    List<String> parts = rangeString.split(' - ');
+    if (parts.length == 1) {
+      return _timeToSeconds(parts[0]);
+    } else {
+      double time1 = _timeToSeconds(parts[0]);
+      double time2 = _timeToSeconds(parts[1]);
+      return (time1 + time2) / 2.0;
+    }
+  }
+
+// Helper function to convert time in min:sec format to seconds
+  double _timeToSeconds(String timeString) {
+    List<String> parts = timeString.split(':');
+    int minutes = int.parse(parts[0]);
+    double seconds = double.parse(parts[1]);
+    return minutes * 60 + seconds;
+  }
 }

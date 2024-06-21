@@ -253,4 +253,27 @@ class DatabaseHelper {
       );
     }
   }
+
+  Future<bool> isDatabaseEmpty() async {
+    final db = await instance.database;
+    final tables = ['student', 'mock_student']; // Add other tables if any
+    for (var table in tables) {
+      final List<Map<String, dynamic>> result = await db.rawQuery('SELECT COUNT(*) FROM $table');
+      int count = Sqflite.firstIntValue(result) ?? 0;
+      if (count > 0) {
+        return false; // If any table has data, the database is not empty
+      }
+    }
+    return true; // All tables are empty
+  }
+
+  // Method to clear the database
+  Future<bool> clearDatabase() async {
+    final db = await instance.database;
+    final tables = ['student', 'mock_student']; // Add other tables if any
+    for (var table in tables) {
+      await db.delete(table);
+    }
+    return true;
+  }
 }
