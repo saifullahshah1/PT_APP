@@ -37,6 +37,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
   bool isLoading = true;
   Student? selectedStudent;
   List<Map<String, dynamic>> currentPointsTable = [];
+  var tapBack = false;
 
   List<Student>? _getSelectedClassStudents() {
     return classes
@@ -105,6 +106,18 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
       );
     }
 
+    if (reps == 0) {
+      if (tapBack) {
+        tapBack = false;
+      } else if (selectedStudent != null && selectedStudent?.shuttleRunSec != -1) {
+        _repsController.text = selectedStudent!.shuttleRunSec.toString();
+        reps = selectedStudent!.shuttleRunSec;
+        points = calculatePoints(reps, _getPointsTable());
+      } else {
+        _repsController.clear();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shuttle Run'),
@@ -157,7 +170,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
               const SizedBox(height: 16),
               // Reg No. Selection
               SizedBox(
-                height: 200, // Set to a suitable height for your use case
+                height: 300, // Set to a suitable height for your use case
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -182,12 +195,12 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
                         decoration: BoxDecoration(
                           color: _selectedRegNo == student.regNo
                               ? const Color(0xff00C485)
-                              : const Color(0xffF1F1F1),
+                              : student.shuttleRunSec == -1 ? const Color(0xffF1F1F1) : const Color(0xffC9C9C9),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Center(
                           child: Text(
-                            '${student.regNo}',
+                            '${student.no}',
                             style: TextStyle(
                               color: _selectedRegNo == student.regNo
                                   ? Colors.white
@@ -505,6 +518,18 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Shuttle run time updated successfully!')),
           );
+
+          // navigate to next student if available
+          if (i < classItem.students.length - 1) {
+            setState(() {
+              _selectedRegNo = classItem.students[i + 1].regNo;
+              selectedStudent = _getStudentData();
+              reps = 0;
+              points = 0;
+              _repsController.clear();
+            });
+          }
+
           return;
         }
       }
@@ -836,6 +861,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
             }),
             const SizedBox(width: 1.0),
             NumberContainer('⌫', () {
+              tapBack = true;
               setState(() {
                 if (_repsController.text.isNotEmpty) {
                   _repsController.text = _repsController.text

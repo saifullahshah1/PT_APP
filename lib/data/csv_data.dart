@@ -1,6 +1,6 @@
 
 class CsvData {
-  // final int no;
+  final int no;
   final String name;
   final int id;
   final String classVal;
@@ -16,7 +16,7 @@ class CsvData {
   final String pftTestDate;
 
   CsvData({
-    // required this.no,
+    required this.no,
     required this.name,
     required this.id,
     required this.classVal,
@@ -34,7 +34,7 @@ class CsvData {
 
   factory CsvData.fromList(List<dynamic> row) {
     return CsvData(
-      // no: _parseInt(row[0]),
+      no: _parseInt(row[0]),
       name: row[1].toString(),
       id:  _parseInt(row[2]),
       classVal: row[3].toString(),
@@ -53,6 +53,7 @@ class CsvData {
 
   factory CsvData.fromList2(Map<String, dynamic> json) {
     return CsvData(
+      no: int.parse(json['no'] ?? '0'),
       name: json['name'] ?? '',
       id: int.parse(json['id'] ?? '0'),
       classVal: json['class'] ?? '',
@@ -63,7 +64,7 @@ class CsvData {
       broadJumpCm: json['broadJumpCm'] ?? 0,
       sitAndReachCm: json['sitAndReachCm'] ?? 0,
       pullUpReps: json['pullUpReps'] ?? 0,
-      shuttleRunSec: (json['shuttleRunSec'] ?? 0.0).toDouble(), // Ensure it's double
+      shuttleRunSec: (json['shuttleRunSec'] ?? 0).toDouble(), // Ensure it's double
       runTime: json['runTime'] ?? 0,
       pftTestDate: json['pftTestDate'] ?? '',
     );
@@ -74,7 +75,7 @@ class CsvData {
     try {
       return int.parse(value.toString());
     } catch (e) {
-      return 0; // or handle the error as needed
+      return -1; // or handle the error as needed
     }
   }
 
@@ -82,13 +83,13 @@ class CsvData {
     try {
       return double.parse(value.toString());
     } catch (e) {
-      return 0.0; // or handle the error as needed
+      return -1; // or handle the error as needed
     }
   }
 
   Map<String, dynamic> toMap() {
     return {
-      // 'no': no,
+      'no': no,
       'name': name,
       'id': id,
       'class': classVal,

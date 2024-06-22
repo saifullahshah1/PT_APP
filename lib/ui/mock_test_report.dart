@@ -67,13 +67,13 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
           color: index.isEven ? const Color(0xffEAEAEA) : Colors.white,
         ),
         children: [
-          _buildTableCell(student.name, true, false, true, false, const Color(0xffF1F1F1)),
-          _buildTableCell('${student.sitUpReps} ($sitUpPoints)', false, false, false, false, const Color(0xffE7E4FF)),
-          _buildTableCell('${student.broadJumpCm} ($broadJumpPoints)', false, false, false, false, const Color(0xffFFEAD0)),
-          _buildTableCell('${student.pullUpReps} ($pullUpPoints)', false, false, false, false, const Color(0xffFFDBDB)),
-          _buildTableCell('${student.sitAndReachCm} ($sitAndReachPoints)', false, false, false, false, const Color(0xffE4E4E4)),
-          _buildTableCell('${student.shuttleRunSec} ($shuttleRunPoints)', false, false, false, false, const Color(0xffFFE7DA)),
-          _buildTableCell('${student.runTime} ($kmRunPoints)', false, false, false, false, const Color(
+          _buildTableCell('${student.no}', true, false, true, false, const Color(0xffF1F1F1)),
+          _buildTableCell('${student.sitUpReps == -1 ? '' : student.sitUpReps} ($sitUpPoints)', false, false, false, false, const Color(0xffE7E4FF)),
+          _buildTableCell('${student.broadJumpCm == -1 ? '' : student.broadJumpCm} ($broadJumpPoints)', false, false, false, false, const Color(0xffFFEAD0)),
+          _buildTableCell('${student.pullUpReps == -1 ? '' : student.pullUpReps} ($pullUpPoints)', false, false, false, false, const Color(0xffFFDBDB)),
+          _buildTableCell('${student.sitAndReachCm == -1 ? '' : student.sitAndReachCm} ($sitAndReachPoints)', false, false, false, false, const Color(0xffE4E4E4)),
+          _buildTableCell('${student.shuttleRunSec == -1 ? '' : student.shuttleRunSec} ($shuttleRunPoints)', false, false, false, false, const Color(0xffFFE7DA)),
+          _buildTableCell('${student.runTime == -1 ? '' : student.runTime} ($kmRunPoints)', false, false, false, false, const Color(
               0xffb3fbe3)),
           _buildTableCell('$totalPoints', false, true, false, true, const Color(0xffF1F1F1)),
         ],
@@ -137,7 +137,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
                   children: [
                     TableRow(
                       children: [
-                        _buildTableHeaderCell('Name', true, false),
+                        _buildTableHeaderCell('No', true, false),
                         _buildTableHeaderCell('Sit Up', false, false, const Color(0xffA9A1FF)),
                         _buildTableHeaderCell('B-Jump', false, false, const Color(0xffFFCB8A)),
                         _buildTableHeaderCell('Pull Up', false, false, const Color(0xffFF7D7D)),

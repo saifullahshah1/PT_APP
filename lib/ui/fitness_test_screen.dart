@@ -50,7 +50,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     super.initState();
     print("initState");
     print("Test type: ${widget.testType}");
-    selectCsvFile();
+    loadData();
   }
 
   /** Upload CSV */
@@ -299,6 +299,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       for (var classItem in classes) {
         for (var student in classItem.students) {
           studentsData.add({
+            'no': student.no,
             'id': student.regNo.toString(),
             'name': student.name,
             'class': student.classVal,
@@ -312,7 +313,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             'shuttleRunSec': student.shuttleRunSec,
             'runTime': student.runTime,
             'pftTestDate': student.pftTestDate,
-            'uploadDate': student.pftTestDate,
+            'uploadDate': DateTime.now().toString(),
           });
         }
       }

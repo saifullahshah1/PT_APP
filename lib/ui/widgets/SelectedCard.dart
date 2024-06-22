@@ -21,9 +21,9 @@ class SelectCardMain extends StatelessWidget {
                   choice.asset,
                 ),
                 fit: BoxFit.cover)),
-        padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Text(choice.title,
-            style: const TextStyle(fontSize: 15, color: Colors.white)),
+            style: const TextStyle(fontSize: 24, color: Colors.white)),
       ),
     );
   }
@@ -51,9 +51,9 @@ class SelectCard extends StatelessWidget {
                   choice.asset,
                 ),
                 fit: BoxFit.cover)),
-        padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Text(choice.title,
-            style: const TextStyle(fontSize: 15, color: Colors.white)),
+            style: const TextStyle(fontSize: 24, color: Colors.white)),
       ),
     );
   }

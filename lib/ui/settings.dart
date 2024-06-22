@@ -32,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder<bool>(
               future: _activationStatus,
@@ -49,7 +49,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         _activationStatus = _checkUserActivation();
                       });
                     },
-                    child: const Text('De-Activation', style: TextStyle(color: Colors.black)),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: const Text(
+                          'Deactivate',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                          )
+                      ),
+                    ),
                   );
                 } else {
                   return ElevatedButton(
@@ -59,11 +68,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         _activationStatus = _checkUserActivation();
                       });
                     },
-                    child: const Text('Activation', style: TextStyle(color: Colors.black)),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: const Text(
+                        'Activate',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                        )
+                      ),
+                    ),
                   );
                 }
               },
             ),
+            SizedBox(height: 32),
             FutureBuilder<bool>(
               future: DatabaseHelper.instance.isDatabaseEmpty(),
               builder: (context, snapshot) {
@@ -76,8 +95,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SnackBar(content: Text('Database is already empty!')),
                       );
                     },
-                    child: const Text('Delete Records',
-                        style: TextStyle(color: Colors.black)),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: const Text(
+                          'Delete Records',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                          )
+                      ),
+                    ),
                   );
                 } else {
                   return ElevatedButton(
@@ -90,12 +117,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       }
                     },
-                    child: const Text('Delete Records',
-                        style: TextStyle(color: Colors.black)),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: const Text(
+                          'Delete Records',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                          )
+                      ),
+                    ),
                   );
                 }
               },
             ),
+            SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -103,7 +139,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   MaterialPageRoute(builder: (context) => AdminLogScreen()),
                 );
               },
-              child: const Text('Admin Log', style: TextStyle(color: Colors.black)),
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: const Text(
+                    'Admin Logs',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                    )
+                ),
+              ),
             ),
           ],
         ),

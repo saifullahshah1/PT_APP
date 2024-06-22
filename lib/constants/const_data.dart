@@ -990,6 +990,8 @@ class KData {
   }
 
   int calculatePointsForShuttleRun(int testNo, int age, String gender, double time) {
+    if (time == -1) { return 0; }
+
     // Fetch the appropriate points table based on the testName
     List<Map<String, dynamic>> pointsTable;
     switch (testNo) {
@@ -1053,6 +1055,8 @@ class KData {
   }
 
   int calculatePointsForKmRun(int testNo, int age, String gender, int runTimeInSeconds) {
+    if (runTimeInSeconds == -1) { return 0; }
+
     // Fetch the appropriate points table based on the testName
     List<Map<String, dynamic>> pointsTable;
     switch (testNo) {

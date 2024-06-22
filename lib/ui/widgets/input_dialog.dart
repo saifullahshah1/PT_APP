@@ -31,7 +31,7 @@ class _InputDialogState extends State<InputDialog> {
         child: TextFormField(
           controller: _controller,
           decoration: const InputDecoration(
-            hintText: 'Enter your valid school license',
+            hintText: 'Enter license                                                                                             ',
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {

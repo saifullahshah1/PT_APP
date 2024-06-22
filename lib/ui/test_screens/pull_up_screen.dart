@@ -34,6 +34,7 @@ class _PullUpScreenState extends State<PullUpScreen> {
   bool isLoading = true; // Add this flag
   Student? selectedStudent;
   List<Map<String, dynamic>> currentPointsTable = [];
+  var tapBack = false;
 
   @override
   void initState() {
@@ -103,6 +104,17 @@ class _PullUpScreenState extends State<PullUpScreen> {
 
     bool shouldShowInclinedPullUp = (selectedStudent!.gender == 'F') || (selectedStudent!.gender == 'M' && selectedStudent!.age < 15);
 
+    if (reps == 0) {
+      if (tapBack) {
+        tapBack = false;
+      } else if (selectedStudent != null && selectedStudent?.pullUpReps != -1) {
+        _repsController.text = selectedStudent!.pullUpReps.toString();
+        reps = selectedStudent!.pullUpReps;
+        points = calculatePoints(reps, _getPointsTable());
+      } else {
+        _repsController.clear();
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -156,7 +168,7 @@ class _PullUpScreenState extends State<PullUpScreen> {
               const SizedBox(height: 16),
               // Reg No. Selection
               SizedBox(
-                height: 150, // Set to a suitable height for your use case
+                height: 300, // Set to a suitable height for your use case
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -181,12 +193,12 @@ class _PullUpScreenState extends State<PullUpScreen> {
                         decoration: BoxDecoration(
                           color: _selectedRegNo == student.regNo
                               ? const Color(0xff00C485)
-                              : const Color(0xffF1F1F1),
+                              : student.pullUpReps == -1 ? const Color(0xffF1F1F1) : const Color(0xffC9C9C9),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Center(
                           child: Text(
-                            '${student.regNo}',
+                            '${student.no}',
                             style: TextStyle(
                               color: _selectedRegNo == student.regNo
                                   ? Colors.white
@@ -668,6 +680,7 @@ class _PullUpScreenState extends State<PullUpScreen> {
                             NumberContainer(
                               '⌫',
                               () {
+                                tapBack = true;
                                 setState(() {
                                   if (_repsController.text.isNotEmpty) {
                                     _repsController.text = _repsController.text
@@ -812,6 +825,17 @@ class _PullUpScreenState extends State<PullUpScreen> {
           // Update the reps in the database
           await DatabaseHelper.instance
               .updatePullUpReps(classItem.students[i].regNo, reps,widget.testType);
+
+          // navigate to next student if available
+          if (i < classItem.students.length - 1) {
+            setState(() {
+              _selectedRegNo = classItem.students[i + 1].regNo;
+              selectedStudent = _getStudentData();
+              reps = 0;
+              points = 0;
+              _repsController.clear();
+            });
+          }
           return;
         }
       }

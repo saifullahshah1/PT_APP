@@ -27,10 +27,9 @@ class Choice {
 
   Future<void> onTap(BuildContext context, int testType) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (testType == 1 &&
-        prefs.getBool('activatedUser') == false &&
-        title != "Sit Up") {
+    var activatedUser = prefs.getBool('activatedUser');
 
+    if (title != 'Sit Up' && (activatedUser == null || activatedUser == false)) {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User Not Activated!')),
