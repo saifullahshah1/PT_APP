@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pt_app/ui/test_screens/km_run.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/const_images.dart';
@@ -415,7 +416,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MockTestReportScreen(),
+                builder: (context) => MockTestReportScreen(csvData),
               ),
             );
           });
@@ -464,12 +465,12 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           data.gender,
           data.dob,
           data.attendanceStatus,
-          data.sitUpReps,
-          data.broadJumpCm,
-          data.sitAndReachCm,
-          data.pullUpReps,
-          data.shuttleRunSec,
-          data.runTime,
+          data.sitUpReps == -1 ? "" : data.sitUpReps ,
+          data.broadJumpCm == -1 ? "" : data.broadJumpCm,
+          data.sitAndReachCm == -1 ? "" : data.sitAndReachCm,
+          data.pullUpReps == -1 ? "" : data.pullUpReps,
+          data.shuttleRunSec == -1 ? "" : data.shuttleRunSec,
+          data.runTime == -1 ? "" : data.runTime,
           data.pftTestDate,
         ]);
       });
@@ -477,20 +478,29 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       // Get external storage directory (Android) or documents directory (iOS)
       Directory? directory;
       if (Platform.isAndroid) {
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> paths = directory.path.split('/');
-          for (int i = 1; i < paths.length; i++) {
-            String pathSegment = paths[i];
-            if (pathSegment != 'Android') {
-              newPath += '/' + pathSegment;
-            } else {
-              break;
+        // Request storage permissions
+        if (await Permission.storage.request().isGranted) {
+          directory = await getExternalStorageDirectory();
+          if (directory != null) {
+            String newPath = '';
+            List<String> paths = directory.path.split('/');
+            for (int i = 1; i < paths.length; i++) {
+              String pathSegment = paths[i];
+              if (pathSegment != 'Android') {
+                newPath += '/' + pathSegment;
+              } else {
+                break;
+              }
             }
+            newPath = newPath + '/Download';
+            directory = Directory(newPath);
           }
-          newPath = newPath + '/Download';
-          directory = Directory(newPath);
+        }else {
+          // Handle the case where permissions are denied
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Permission denied to access storage')),
+          );
+          return;
         }
       } else {
         directory = await getApplicationDocumentsDirectory();

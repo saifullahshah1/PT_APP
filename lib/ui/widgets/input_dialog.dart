@@ -94,18 +94,18 @@ class _InputDialogState extends State<InputDialog> {
       print(prefs.getString('expiryDate') ?? '');
 
       print('License Validated');
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Activated!')),
       );
-      Navigator.of(context).pop();
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('activatedUser', false);
       print('Failed to validate license');
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to validate license')),
       );
-      Navigator.of(context).pop();
     }
   }
 

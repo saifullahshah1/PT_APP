@@ -1,13 +1,21 @@
+import 'dart:io';
+
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../constants/const_data.dart';
+import '../data/csv_data.dart';
 import '../model/class.dart';
 import '../model/student.dart';
 import 'fitness_test_screen.dart'; // For firstWhereOrNull extension
 
 class MockTestReportScreen extends StatefulWidget {
-  MockTestReportScreen({Key? key}) : super(key: key);
+  final List<CsvData> csvData;
+
+  MockTestReportScreen(this.csvData, {Key? key}) : super(key: key);
 
   @override
   _MockTestReportScreenState createState() => _MockTestReportScreenState();
@@ -42,21 +50,35 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
 
     // Calculate total points for each student and categorize awards
     var studentRows = _getSelectedClassStudents()?.mapIndexed((index, student) {
+
+      int threshold = 0;
+
       int sitUpPoints = kData.calculatePoints(1, student.age, student.gender, student.sitUpReps);
       int broadJumpPoints = kData.calculatePoints(2, student.age, student.gender, student.broadJumpCm);
-      int pullUpPoints = kData.calculatePoints(3, student.age, student.gender, student.pullUpReps);
-      int sitAndReachPoints = kData.calculatePoints(4, student.age, student.gender, student.sitAndReachCm);
+      int sitAndReachPoints = kData.calculatePoints(3, student.age, student.gender, student.sitAndReachCm);
+      int pullUpPoints = kData.calculatePoints(4, student.age, student.gender, student.pullUpReps);
       int shuttleRunPoints = kData.calculatePointsForShuttleRun(5, student.age, student.gender, student.shuttleRunSec);
       int kmRunPoints = kData.calculatePointsForKmRun(6, student.age, student.gender, student.runTime);
 
-      int totalPoints = sitUpPoints + broadJumpPoints + pullUpPoints + sitAndReachPoints + shuttleRunPoints;
+      int totalPoints = sitUpPoints + broadJumpPoints + pullUpPoints + sitAndReachPoints + shuttleRunPoints + kmRunPoints;
+
+      if(sitUpPoints >= 3 && broadJumpPoints >= 3 && pullUpPoints >= 3 && sitAndReachPoints >= 3  && shuttleRunPoints >= 3 && kmRunPoints >= 3){
+        threshold = 3;
+      } else if(sitUpPoints >= 2 && broadJumpPoints >= 2 && pullUpPoints >= 2 && sitAndReachPoints >= 2  && shuttleRunPoints >= 2 && kmRunPoints >= 2){
+        threshold = 2;
+      }else if(sitUpPoints >= 1 && broadJumpPoints >= 1 && pullUpPoints >= 1 && sitAndReachPoints >= 1  && shuttleRunPoints >= 1 && kmRunPoints >= 1){
+        threshold = 1;
+      }else {
+        threshold = 0;
+      }
+
 
       // Categorize award based on total points
-      if (totalPoints >= 21) {
+      if (totalPoints >= 21 && threshold == 3) {
         goldCount++;
-      } else if (totalPoints >= 15) {
+      } else if (totalPoints >= 15 && threshold == 2) {
         silverCount++;
-      } else if (totalPoints >= 6) {
+      } else if (totalPoints >= 6 && threshold == 1) {
         bronzeCount++;
       } else {
         failCount++;
@@ -84,6 +106,16 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
       appBar: AppBar(
         title: const Text('Mock Test Screen'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save), // Replace with your desired icon
+            onPressed: () {
+              // Implement the action when the button is pressed
+              // For example, navigate to another screen, show a dialog, etc.
+              _generateCSV(widget.csvData, context);
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -272,5 +304,94 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
     return classes
         .firstWhereOrNull((cls) => cls.className == selectedClass)
         ?.students;
+  }
+
+  Future<void> _generateCSV(List<CsvData> dataList,
+      BuildContext context) async {
+    try {
+      List<List<dynamic>> rows = [];
+
+      // Add header row
+      rows.add([
+        'Name',
+        'ID',
+        'Class',
+        'Gender',
+        'DOB',
+        'Attendance Status',
+        'Sit-Up Reps',
+        'Broad Jump (cm)',
+        'Sit and Reach (cm)',
+        'Pull-Up Reps',
+        'Shuttle Run (sec)',
+        'Run Time',
+        'PFT Test Date',
+      ]);
+
+      // Add data rows
+      dataList.forEach((data) {
+        rows.add([
+          data.name,
+          data.id,
+          data.classVal,
+          data.gender,
+          data.dob,
+          data.attendanceStatus,
+          data.sitUpReps == -1 ? "" : data.sitUpReps ,
+          data.broadJumpCm == -1 ? "" : data.broadJumpCm,
+          data.sitAndReachCm == -1 ? "" : data.sitAndReachCm,
+          data.pullUpReps == -1 ? "" : data.pullUpReps,
+          data.shuttleRunSec == -1 ? "" : data.shuttleRunSec,
+          data.runTime == -1 ? "" : data.runTime,
+          data.pftTestDate,
+        ]);
+      });
+
+      // Get external storage directory (Android) or documents directory (iOS)
+      Directory? directory;
+      if (Platform.isAndroid) {
+        // Request storage permissions
+        if (await Permission.storage.request().isGranted) {
+          directory = await getExternalStorageDirectory();
+          if (directory != null) {
+            String newPath = '';
+            List<String> paths = directory.path.split('/');
+            for (int i = 1; i < paths.length; i++) {
+              String pathSegment = paths[i];
+              if (pathSegment != 'Android') {
+                newPath += '/' + pathSegment;
+              } else {
+                break;
+              }
+            }
+            newPath = newPath + '/Download';
+            directory = Directory(newPath);
+          }
+        }else {
+          // Handle the case where permissions are denied
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Permission denied to access storage')),
+          );
+          return;
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+      if (directory == null) return; // Handle if directory is null
+
+      // Create file path
+      String filePath = '${directory.path}/mock_report.csv';
+
+      // Write CSV to file
+      File csvFile = File(filePath);
+      String csv = const ListToCsvConverter().convert(rows);
+      await csvFile.writeAsString(csv);
+
+      // Show a message or perform any other action after CSV generation
+      print('CSV generated successfully at: $filePath');
+    } catch (e) {
+      print('Error generating CSV: $e');
+      // Handle error as needed
+    }
   }
 }

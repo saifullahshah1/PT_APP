@@ -53,7 +53,7 @@ class CsvData {
 
   factory CsvData.fromList2(Map<String, dynamic> json) {
     return CsvData(
-      no: int.parse(json['no'] ?? '0'),
+      no: /*int.parse(*/json['no'] ?? '0'/*)*/,
       name: json['name'] ?? '',
       id: int.parse(json['id'] ?? '0'),
       classVal: json['class'] ?? '',

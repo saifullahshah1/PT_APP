@@ -404,7 +404,9 @@ class _SitUpScreenState extends State<SitUpScreen> {
                                 // Optional: Padding inside the container
                                 child: Center(
                                   child: Text(
-                                    '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                    '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:'
+                                        '${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}:'
+                                        '${(duration.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0')}',
                                     style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
@@ -785,13 +787,13 @@ class _SitUpScreenState extends State<SitUpScreen> {
     setState(() {
       isTimerRunning = true;
     });
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
-        final seconds = duration.inSeconds - 1;
-        if (seconds < 0) {
+        final milliseconds = duration.inMilliseconds - 10;
+        if (milliseconds < 0) {
           stopTimer();
         } else {
-          duration = Duration(seconds: seconds);
+          duration = Duration(milliseconds: milliseconds);
         }
       });
     });
@@ -814,6 +816,11 @@ class _SitUpScreenState extends State<SitUpScreen> {
   void _updateSitUpReps() async {
     if (_selectedRegNo == null) return;
 
+    // Stop the timer if it's running
+    if (isTimerRunning) {
+      stopTimer();
+    }
+
     // Update the reps for the current student in the classes list
     for (var classItem in classes) {
       for (var i = 0; i < classItem.students.length; i++) {
@@ -827,6 +834,7 @@ class _SitUpScreenState extends State<SitUpScreen> {
           await DatabaseHelper.instance
               .updateSitUpReps(classItem.students[i].regNo, reps,widget.testType);
 
+          resetTimer();
           // navigate to next student if available
           if (i < classItem.students.length - 1) {
             setState(() {

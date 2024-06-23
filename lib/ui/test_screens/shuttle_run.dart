@@ -31,7 +31,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
 
   bool _switchValue = true;
   bool isTimerRunning = false;
-  Duration duration = const Duration(seconds: 0);
+  Duration duration = const Duration(milliseconds: 0);
   Timer? timer;
 
   bool isLoading = true;
@@ -437,6 +437,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
   }
 
   Color getColorForRow(String range, double reps) {
+
     // Helper function to parse range strings
     bool isInRange(String range, double reps) {
       if (range.startsWith('> ')) {
@@ -490,6 +491,9 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
   }
 
   void _updateShuttleRunSec() async {
+    print("_updateShuttleRunSec\n${_selectedRegNo}\n$isTimerRunning\n$_switchValue");
+
+
     if (_selectedRegNo == null) return;
 
     // Stop the timer if it's running
@@ -500,7 +504,8 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
     // Determine the value to be used for reps based on the switch value
     if (!_switchValue) {
       // If manual entry is not selected, use the timer value
-      reps = duration.inSeconds.toDouble();
+      reps = (duration.inMilliseconds.toDouble() /1000.0).toDouble();
+      // reps = (duration.inMilliseconds.toDouble()/1000.0).toDouble();
     }
 
     // Update the reps for the current student in the classes list
@@ -510,6 +515,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
           setState(() {
             classItem.students[i] =
                 classItem.students[i].copyWith(shuttleRunSec: reps);
+            points = calculatePoints(reps, _getPointsTable()); // Update points
           });
 
           // Update the reps in the database
@@ -518,7 +524,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Shuttle run time updated successfully!')),
           );
-
+          resetTimer();
           // navigate to next student if available
           if (i < classItem.students.length - 1) {
             setState(() {
@@ -549,12 +555,11 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
   void startTimer() {
     setState(() {
       isTimerRunning = true;
-      // duration = const Duration(seconds: 0);
     });
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
-        final seconds = duration.inSeconds + 1;
-        duration = Duration(seconds: seconds);
+        final milliseconds = duration.inMilliseconds + 10;
+        duration = Duration(milliseconds: milliseconds);
       });
     });
   }
@@ -563,6 +568,8 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
     setState(() {
       isTimerRunning = false;
       timer?.cancel();
+      reps = (duration.inMilliseconds.toDouble() /1000.0).toDouble();
+      points = calculatePoints(reps, _getPointsTable()); // Update points when timer stops
     });
   }
 
@@ -570,7 +577,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
     setState(() {
       isTimerRunning = false;
       timer?.cancel();
-      duration = const Duration(seconds: 0);
+      duration = const Duration(milliseconds: 0);
     });
   }
 
@@ -613,6 +620,10 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
   }
 
   Widget _buildTimer() {
+
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final milliseconds = (duration.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0');
     return Column(
       children: [
         Row(
@@ -626,7 +637,7 @@ class _ShuttleRunScreenState extends State<ShuttleRunScreen> {
                 padding: const EdgeInsets.all(28.0),
                 child: Center(
                   child: Text(
-                    '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                    '$minutes:$seconds:$milliseconds',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

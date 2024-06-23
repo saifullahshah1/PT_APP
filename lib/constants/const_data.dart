@@ -74,6 +74,78 @@ class KData {
           {'reps': '< 16', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 30', 'points': 5},
+          {'reps': '29 - 30', 'points': 4},
+          {'reps': '25 - 28', 'points': 3},
+          {'reps': '21 - 24', 'points': 2},
+          {'reps': '17 - 20', 'points': 1},
+          {'reps': '< 17', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 30', 'points': 5},
+          {'reps': '29 - 30', 'points': 4},
+          {'reps': '26 - 28', 'points': 3},
+          {'reps': '22 - 25', 'points': 2},
+          {'reps': '18 - 21', 'points': 1},
+          {'reps': '< 18', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 30', 'points': 5},
+          {'reps': '29 - 30', 'points': 4},
+          {'reps': '27 - 28', 'points': 3},
+          {'reps': '23 - 26', 'points': 2},
+          {'reps': '19 - 22', 'points': 1},
+          {'reps': '< 19', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 30', 'points': 5},
+          {'reps': '29 - 30', 'points': 4},
+          {'reps': '27 - 28', 'points': 3},
+          {'reps': '24 - 26', 'points': 2},
+          {'reps': '20 - 23', 'points': 1},
+          {'reps': '< 20', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 30', 'points': 5},
+          {'reps': '29 - 30', 'points': 4},
+          {'reps': '27 - 28', 'points': 3},
+          {'reps': '24 - 26', 'points': 2},
+          {'reps': '21 - 23', 'points': 1},
+          {'reps': '< 21', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 28', 'points': 5},
+          {'reps': '27 - 28', 'points': 4},
+          {'reps': '25 - 26', 'points': 3},
+          {'reps': '23 - 24', 'points': 2},
+          {'reps': '21 - 22', 'points': 1},
+          {'reps': '< 21', 'points': 0},
+        ]
+      },
       // M
       {
         'age': 9,
@@ -145,6 +217,78 @@ class KData {
           {'reps': '33 - 36', 'points': 2},
           {'reps': '29 - 32', 'points': 1},
           {'reps': '< 29', 'points': 0},
+        ]
+      },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 42', 'points': 5},
+          {'reps': '40 - 42', 'points': 4},
+          {'reps': '37 - 39', 'points': 3},
+          {'reps': '34 - 36', 'points': 2},
+          {'reps': '30 - 33', 'points': 1},
+          {'reps': '< 30', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 42', 'points': 5},
+          {'reps': '40 - 42', 'points': 4},
+          {'reps': '37 - 39', 'points': 3},
+          {'reps': '34 - 36', 'points': 2},
+          {'reps': '31 - 33', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 42', 'points': 5},
+          {'reps': '40 - 42', 'points': 4},
+          {'reps': '37 - 39', 'points': 3},
+          {'reps': '34 - 36', 'points': 2},
+          {'reps': '31 - 33', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 42', 'points': 5},
+          {'reps': '40 - 42', 'points': 4},
+          {'reps': '37 - 39', 'points': 3},
+          {'reps': '34 - 36', 'points': 2},
+          {'reps': '31 - 33', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 42', 'points': 5},
+          {'reps': '40 - 42', 'points': 4},
+          {'reps': '37 - 39', 'points': 3},
+          {'reps': '34 - 36', 'points': 2},
+          {'reps': '31 - 33', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 39', 'points': 5},
+          {'reps': '37 - 39', 'points': 4},
+          {'reps': '34 - 36', 'points': 3},
+          {'reps': '31 - 33', 'points': 2},
+          {'reps': '28 - 30', 'points': 1},
+          {'reps': '< 28', 'points': 0},
         ]
       },
     ];
@@ -225,7 +369,78 @@ class KData {
           {'reps': '< 142', 'points': 0},
         ]
       },
-
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 182', 'points': 5},
+          {'reps': '174 - 182', 'points': 4},
+          {'reps': '165 - 173', 'points': 3},
+          {'reps': '156 - 164', 'points': 2},
+          {'reps': '147 - 155', 'points': 1},
+          {'reps': '< 147', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 186', 'points': 5},
+          {'reps': '178 - 186', 'points': 4},
+          {'reps': '169 - 177', 'points': 3},
+          {'reps': '160 - 168', 'points': 2},
+          {'reps': '151 - 159', 'points': 1},
+          {'reps': '< 151', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 189', 'points': 5},
+          {'reps': '181 - 189', 'points': 4},
+          {'reps': '172 - 180', 'points': 3},
+          {'reps': '163 - 171', 'points': 2},
+          {'reps': '154 - 162', 'points': 1},
+          {'reps': '< 154', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 192', 'points': 5},
+          {'reps': '183 - 192', 'points': 4},
+          {'reps': '174 - 182', 'points': 3},
+          {'reps': '165 - 173', 'points': 2},
+          {'reps': '156 - 164', 'points': 1},
+          {'reps': '< 156', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 195', 'points': 5},
+          {'reps': '185 - 195', 'points': 4},
+          {'reps': '174 - 184', 'points': 3},
+          {'reps': '165 - 173', 'points': 2},
+          {'reps': '156 - 164', 'points': 1},
+          {'reps': '< 156', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 197', 'points': 5},
+          {'reps': '186 - 197', 'points': 4},
+          {'reps': '174 - 185', 'points': 3},
+          {'reps': '162 - 173', 'points': 2},
+          {'reps': '150 - 161', 'points': 1},
+          {'reps': '< 150', 'points': 0},
+        ]
+      },
       // M
       {
         'age': 9,
@@ -299,6 +514,78 @@ class KData {
           {'reps': '< 186', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 237', 'points': 5},
+          {'reps': '228 - 237', 'points': 4},
+          {'reps': '218 - 227', 'points': 3},
+          {'reps': '208 - 217', 'points': 2},
+          {'reps': '198 - 207', 'points': 1},
+          {'reps': '< 198', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 245', 'points': 5},
+          {'reps': '236 - 245', 'points': 4},
+          {'reps': '226 - 235', 'points': 3},
+          {'reps': '216 - 225', 'points': 2},
+          {'reps': '206 - 215', 'points': 1},
+          {'reps': '< 206', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 249', 'points': 5},
+          {'reps': '240 - 249', 'points': 4},
+          {'reps': '230 - 239', 'points': 3},
+          {'reps': '220 - 229', 'points': 2},
+          {'reps': '210 - 219', 'points': 1},
+          {'reps': '< 210', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 251', 'points': 5},
+          {'reps': '242 - 251', 'points': 4},
+          {'reps': '232 - 241', 'points': 3},
+          {'reps': '222 - 231', 'points': 2},
+          {'reps': '212 - 221', 'points': 1},
+          {'reps': '< 212', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 251', 'points': 5},
+          {'reps': '242 - 251', 'points': 4},
+          {'reps': '232 - 241', 'points': 3},
+          {'reps': '222 - 231', 'points': 2},
+          {'reps': '212 - 221', 'points': 1},
+          {'reps': '< 212', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 242', 'points': 5},
+          {'reps': '234 - 242', 'points': 4},
+          {'reps': '225 - 233', 'points': 3},
+          {'reps': '216 - 224', 'points': 2},
+          {'reps': '207 - 215', 'points': 1},
+          {'reps': '< 207', 'points': 0},
+        ]
+      }
     ];
   }
 
@@ -377,7 +664,78 @@ class KData {
           {'reps': '< 29', 'points': 0},
         ]
       },
-
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 45', 'points': 5},
+          {'reps': '43 - 45', 'points': 4},
+          {'reps': '39 - 42', 'points': 3},
+          {'reps': '35 - 38', 'points': 2},
+          {'reps': '30 - 34', 'points': 1},
+          {'reps': '< 30', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 46', 'points': 5},
+          {'reps': '44 - 46', 'points': 4},
+          {'reps': '40 - 43', 'points': 3},
+          {'reps': '36 - 39', 'points': 2},
+          {'reps': '31 - 35', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 46', 'points': 5},
+          {'reps': '44 - 46', 'points': 4},
+          {'reps': '40 - 43', 'points': 3},
+          {'reps': '36 - 39', 'points': 2},
+          {'reps': '32 - 35', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 46', 'points': 5},
+          {'reps': '44 - 46', 'points': 4},
+          {'reps': '40 - 43', 'points': 3},
+          {'reps': '36 - 39', 'points': 2},
+          {'reps': '32 - 35', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 45', 'points': 5},
+          {'reps': '43 - 45', 'points': 4},
+          {'reps': '39 - 42', 'points': 3},
+          {'reps': '36 - 38', 'points': 2},
+          {'reps': '32 - 35', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 43', 'points': 5},
+          {'reps': '41 - 43', 'points': 4},
+          {'reps': '38 - 40', 'points': 3},
+          {'reps': '35 - 37', 'points': 2},
+          {'reps': '31 - 34', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
       //M
       {
         'age': 9,
@@ -449,6 +807,78 @@ class KData {
           {'reps': '32 - 35', 'points': 2},
           {'reps': '27 - 31', 'points': 1},
           {'reps': '< 27', 'points': 0},
+        ]
+      },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 45', 'points': 5},
+          {'reps': '42 - 45', 'points': 4},
+          {'reps': '38 - 41', 'points': 3},
+          {'reps': '34 - 37', 'points': 2},
+          {'reps': '29 - 33', 'points': 1},
+          {'reps': '< 29', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 47', 'points': 5},
+          {'reps': '44 - 47', 'points': 4},
+          {'reps': '40 - 43', 'points': 3},
+          {'reps': '36 - 39', 'points': 2},
+          {'reps': '31 - 35', 'points': 1},
+          {'reps': '< 31', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 48', 'points': 5},
+          {'reps': '45 - 48', 'points': 4},
+          {'reps': '41 - 44', 'points': 3},
+          {'reps': '37 - 40', 'points': 2},
+          {'reps': '32 - 36', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 48', 'points': 5},
+          {'reps': '45 - 48', 'points': 4},
+          {'reps': '41 - 44', 'points': 3},
+          {'reps': '37 - 40', 'points': 2},
+          {'reps': '32 - 36', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 48', 'points': 5},
+          {'reps': '45 - 48', 'points': 4},
+          {'reps': '41 - 44', 'points': 3},
+          {'reps': '37 - 40', 'points': 2},
+          {'reps': '32 - 36', 'points': 1},
+          {'reps': '< 32', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 47', 'points': 5},
+          {'reps': '44 - 47', 'points': 4},
+          {'reps': '40 - 43', 'points': 3},
+          {'reps': '36 - 39', 'points': 2},
+          {'reps': '32 - 35', 'points': 1},
+          {'reps': '< 32', 'points': 0},
         ]
       },
     ];
@@ -529,6 +959,78 @@ class KData {
           {'reps': '< 3', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 16', 'points': 5},
+          {'reps': '14 - 16', 'points': 4},
+          {'reps': '10 - 13', 'points': 3},
+          {'reps': '7 - 9', 'points': 2},
+          {'reps': '3 - 6', 'points': 1},
+          {'reps': '< 3', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 17', 'points': 5},
+          {'reps': '14 - 17', 'points': 4},
+          {'reps': '11 - 13', 'points': 3},
+          {'reps': '7 - 10', 'points': 2},
+          {'reps': '3 - 6', 'points': 1},
+          {'reps': '< 3', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 17', 'points': 5},
+          {'reps': '14 - 17', 'points': 4},
+          {'reps': '11 - 13', 'points': 3},
+          {'reps': '7 - 10', 'points': 2},
+          {'reps': '3 - 6', 'points': 1},
+          {'reps': '< 3', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 17', 'points': 5},
+          {'reps': '15 - 17', 'points': 4},
+          {'reps': '11 - 14', 'points': 3},
+          {'reps': '8 - 10', 'points': 2},
+          {'reps': '4 - 7', 'points': 1},
+          {'reps': '< 4', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 17', 'points': 5},
+          {'reps': '15 - 17', 'points': 4},
+          {'reps': '11 - 14', 'points': 3},
+          {'reps': '8 - 10', 'points': 2},
+          {'reps': '5 - 7', 'points': 1},
+          {'reps': '< 5', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'reps': '> 17', 'points': 5},
+          {'reps': '15 - 17', 'points': 4},
+          {'reps': '11 - 14', 'points': 3},
+          {'reps': '8 - 10', 'points': 2},
+          {'reps': '5 - 7', 'points': 1},
+          {'reps': '< 5', 'points': 0},
+        ]
+      },
 
       // M
       {
@@ -601,6 +1103,78 @@ class KData {
           {'reps': '13 - 17', 'points': 2},
           {'reps': '8 - 12', 'points': 1},
           {'reps': '< 8', 'points': 0},
+        ]
+      },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 7', 'points': 5},
+          {'reps': '6 - 7', 'points': 4},
+          {'reps': '5 - 5', 'points': 3},
+          {'reps': '3 - 4', 'points': 2},
+          {'reps': '1 - 2', 'points': 1},
+          {'reps': '< 1', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 8', 'points': 5},
+          {'reps': '7 - 8', 'points': 4},
+          {'reps': '5 - 6', 'points': 3},
+          {'reps': '3 - 4', 'points': 2},
+          {'reps': '1 - 2', 'points': 1},
+          {'reps': '< 1', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 9', 'points': 5},
+          {'reps': '8 - 9', 'points': 4},
+          {'reps': '6 - 7', 'points': 3},
+          {'reps': '4 - 5', 'points': 2},
+          {'reps': '2 - 3', 'points': 1},
+          {'reps': '< 2', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 10', 'points': 5},
+          {'reps': '9 - 10', 'points': 4},
+          {'reps': '7 - 8', 'points': 3},
+          {'reps': '5 - 6', 'points': 2},
+          {'reps': '3 - 4', 'points': 1},
+          {'reps': '< 3', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 10', 'points': 5},
+          {'reps': '9 - 10', 'points': 4},
+          {'reps': '7 - 8', 'points': 3},
+          {'reps': '5 - 6', 'points': 2},
+          {'reps': '3 - 4', 'points': 1},
+          {'reps': '< 3', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'reps': '> 10', 'points': 5},
+          {'reps': '9 - 10', 'points': 4},
+          {'reps': '7 - 8', 'points': 3},
+          {'reps': '5 - 6', 'points': 2},
+          {'reps': '3 - 4', 'points': 1},
+          {'reps': '< 3', 'points': 0},
         ]
       },
     ];
@@ -681,6 +1255,78 @@ class KData {
           {'time': '> 13.0', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.3', 'points': 5},
+          {'time': '11.3 - 11.6', 'points': 4},
+          {'time': '11.7 - 12.0', 'points': 3},
+          {'time': '12.1 - 12.4', 'points': 2},
+          {'time': '12.5 - 12.8', 'points': 1},
+          {'time': '> 12.5', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.3', 'points': 5},
+          {'time': '11.3 - 11.5', 'points': 4},
+          {'time': '11.6 - 11.8', 'points': 3},
+          {'time': '11.9 - 12.2', 'points': 2},
+          {'time': '12.3 - 12.6', 'points': 1},
+          {'time': '> 12.3', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.3', 'points': 5},
+          {'time': '11.3 - 11.5', 'points': 4},
+          {'time': '11.6 - 11.8', 'points': 3},
+          {'time': '11.9 - 12.1', 'points': 2},
+          {'time': '12.2 - 12.5', 'points': 1},
+          {'time': '> 12.2', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.3', 'points': 5},
+          {'time': '11.3 - 11.5', 'points': 4},
+          {'time': '11.6 - 11.8', 'points': 3},
+          {'time': '11.9 - 12.1', 'points': 2},
+          {'time': '12.2 - 12.4', 'points': 1},
+          {'time': '> 12.2', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.3', 'points': 5},
+          {'time': '11.3 - 11.5', 'points': 4},
+          {'time': '11.6 - 11.8', 'points': 3},
+          {'time': '11.9 - 12.1', 'points': 2},
+          {'time': '12.2 - 12.4', 'points': 1},
+          {'time': '> 12.2', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 11.6', 'points': 5},
+          {'time': '11.6 - 11.8', 'points': 4},
+          {'time': '11.9 - 12.1', 'points': 3},
+          {'time': '12.2 - 12.4', 'points': 2},
+          {'time': '12.5 - 12.7', 'points': 1},
+          {'time': '> 12.5', 'points': 0},
+        ]
+      },
       // M
       {
         'age': 9,
@@ -752,6 +1398,78 @@ class KData {
           {'time': '10.9 - 11.2', 'points': 2},
           {'time': '11.3 - 11.6', 'points': 1},
           {'time': '> 11.6', 'points': 0},
+        ]
+      },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.2', 'points': 5},
+          {'time': '10.2 - 10.3', 'points': 4},
+          {'time': '10.4 - 10.5', 'points': 3},
+          {'time': '10.6 - 10.9', 'points': 2},
+          {'time': '11.0 - 11.3', 'points': 1},
+          {'time': '> 11.0', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.2', 'points': 5},
+          {'time': '10.2 - 10.3', 'points': 4},
+          {'time': '10.4 - 10.5', 'points': 3},
+          {'time': '10.6 - 10.7', 'points': 2},
+          {'time': '10.8 - 11.1', 'points': 1},
+          {'time': '> 10.8', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.2', 'points': 5},
+          {'time': '10.2 - 10.3', 'points': 4},
+          {'time': '10.4 - 10.5', 'points': 3},
+          {'time': '10.6 - 10.7', 'points': 2},
+          {'time': '10.8 - 10.9', 'points': 1},
+          {'time': '> 10.8', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.2', 'points': 5},
+          {'time': '10.2 - 10.3', 'points': 4},
+          {'time': '10.4 - 10.5', 'points': 3},
+          {'time': '10.6 - 10.7', 'points': 2},
+          {'time': '10.8 - 10.9', 'points': 1},
+          {'time': '> 10.8', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.2', 'points': 5},
+          {'time': '10.2 - 10.3', 'points': 4},
+          {'time': '10.4 - 10.5', 'points': 3},
+          {'time': '10.6 - 10.7', 'points': 2},
+          {'time': '10.8 - 10.9', 'points': 1},
+          {'time': '> 10.8', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10.4', 'points': 5},
+          {'time': '10.4 - 10.5', 'points': 4},
+          {'time': '10.6 - 10.7', 'points': 3},
+          {'time': '10.8 - 10.9', 'points': 2},
+          {'time': '11.0 - 11.1', 'points': 1},
+          {'time': '> 11.0', 'points': 0},
         ]
       },
     ];
@@ -832,6 +1550,78 @@ class KData {
           {'time': '> 18:20', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:11', 'points': 5},
+          {'time': '14:11 - 15:10', 'points': 4},
+          {'time': '15:11 - 16:10', 'points': 3},
+          {'time': '16:11 - 17:10', 'points': 2},
+          {'time': '17:11 - 18:10', 'points': 1},
+          {'time': '> 17:11', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:01', 'points': 5},
+          {'time': '14:01 - 15:00', 'points': 4},
+          {'time': '15:01 - 16:00', 'points': 3},
+          {'time': '16:01 - 17:00', 'points': 2},
+          {'time': '17:01 - 17:50', 'points': 1},
+          {'time': '> 17:01', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:01', 'points': 5},
+          {'time': '14:01 - 14:50', 'points': 4},
+          {'time': '14:51 - 15:50', 'points': 3},
+          {'time': '15:51 - 16:40', 'points': 2},
+          {'time': '16:41 - 17:30', 'points': 1},
+          {'time': '> 16:41', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:01', 'points': 5},
+          {'time': '14:01 - 14:50', 'points': 4},
+          {'time': '14:51 - 15:40', 'points': 3},
+          {'time': '15:41 - 16:30', 'points': 2},
+          {'time': '16:31 - 17:20', 'points': 1},
+          {'time': '> 16:31', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 14:21', 'points': 5},
+          {'time': '14:21 - 14:50', 'points': 4},
+          {'time': '14:51 - 15:30', 'points': 3},
+          {'time': '15:31 - 16:20', 'points': 2},
+          {'time': '16:21 - 17:10', 'points': 1},
+          {'time': '> 16:21', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'F',
+        'pointsTable': [
+          {'time': '< 15:01', 'points': 5},
+          {'time': '15:01 - 15:30', 'points': 4},
+          {'time': '15:31 - 16:00', 'points': 3},
+          {'time': '16:01 - 16:30', 'points': 2},
+          {'time': '16:31 - 17:00', 'points': 1},
+          {'time': '> 16:31', 'points': 0},
+        ]
+      },
       // M
       {
         'age': 9,
@@ -905,10 +1695,83 @@ class KData {
           {'time': '> 15:20', 'points': 0},
         ]
       },
+      {
+        'age': 15,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:41', 'points': 5},
+          {'time': '10:41 - 11:40', 'points': 4},
+          {'time': '11:41 - 12:40', 'points': 3},
+          {'time': '12:41 - 13:40', 'points': 2},
+          {'time': '13:41 - 14:40', 'points': 1},
+          {'time': '> 13:41', 'points': 0},
+        ]
+      },
+      {
+        'age': 16,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:31', 'points': 5},
+          {'time': '10:31 - 11:30', 'points': 4},
+          {'time': '11:31 - 12:20', 'points': 3},
+          {'time': '12:21 - 13:20', 'points': 2},
+          {'time': '13:21 - 14:10', 'points': 1},
+          {'time': '> 13:21', 'points': 0},
+        ]
+      },
+      {
+        'age': 17,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:21', 'points': 5},
+          {'time': '10:21 - 11:10', 'points': 4},
+          {'time': '11:11 - 12:00', 'points': 3},
+          {'time': '12:01 - 12:50', 'points': 2},
+          {'time': '12:51 - 13:40', 'points': 1},
+          {'time': '> 12:51', 'points': 0},
+        ]
+      },
+      {
+        'age': 18,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:21', 'points': 5},
+          {'time': '10:21 - 11:10', 'points': 4},
+          {'time': '11:11 - 11:50', 'points': 3},
+          {'time': '11:51 - 12:40', 'points': 2},
+          {'time': '12:41 - 13:30', 'points': 1},
+          {'time': '> 12:41', 'points': 0},
+        ]
+      },
+      {
+        'age': 19,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:21', 'points': 5},
+          {'time': '10:21 - 11:00', 'points': 4},
+          {'time': '11:01 - 11:40', 'points': 3},
+          {'time': '11:41 - 12:30', 'points': 2},
+          {'time': '12:31 - 13:20', 'points': 1},
+          {'time': '> 12:31', 'points': 0},
+        ]
+      },
+      {
+        'age': 20,
+        'gender': 'M',
+        'pointsTable': [
+          {'time': '< 10:21', 'points': 5},
+          {'time': '10:21 - 11:00', 'points': 4},
+          {'time': '11:01 - 11:40', 'points': 3},
+          {'time': '11:41 - 12:20', 'points': 2},
+          {'time': '12:21 - 13:00', 'points': 1},
+          {'time': '> 12:21', 'points': 0},
+        ]
+      },
     ];
   }
 
   List<Map<String, dynamic>> getPointsTable(int age, String gender, int featureIndex) {
+    print("getPointsTable");
     print("Beofre $age \t $gender");
     late List<Map<String, dynamic>> getFeaturePointsTable;
     if (featureIndex == 1) {
@@ -923,8 +1786,8 @@ class KData {
       getFeaturePointsTable = getShuttleRunPointsTable();
     }
 
-    if (age > 14) {
-      age = 14;
+    if (age > 20) {
+      age = 20;
     } else if (age < 9) {
       age = 9;
     }
@@ -962,8 +1825,8 @@ class KData {
         throw Exception("Invalid test name");
     }
 
-    if (age > 14) {
-      age = 14;
+    if (age > 20) {
+      age = 20;
     } else if (age < 9) {
       age = 9;
     }
@@ -1002,8 +1865,8 @@ class KData {
         throw Exception("Invalid test name");
     }
 
-    if (age > 14) {
-      age = 14;
+    if (age > 20) {
+      age = 20;
     } else if (age < 9) {
       age = 9;
     }
@@ -1068,8 +1931,8 @@ class KData {
     }
 
     // Adjust age if out of defined range
-    if (age > 14) {
-      age = 14;
+    if (age > 20) {
+      age = 20;
     } else if (age < 9) {
       age = 9;
     }

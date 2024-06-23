@@ -192,7 +192,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
-        'status': "deactivate",
+        // 'status': "deactivate",
+        'deviceName': "none",
         'issuedDate': issuedDate,
         'expiryDate': expiryDate,
       }),

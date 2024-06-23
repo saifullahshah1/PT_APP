@@ -244,6 +244,17 @@ class DatabaseHelper {
     );
   }
 
+  Future<int> updateKmRun(int regNo, int seconds, int tableType) async {
+    final db = await instance.database;
+    final tableName = _getTableName(tableType);
+    return await db.update(
+      tableName,
+      {'runTime': seconds},
+      where: 'id = ?',
+      whereArgs: [regNo],
+    );
+  }
+
   Future<void> saveStudents(List<Student> students,int tableType) async {
     final db = await instance.database;
     final tableName = _getTableName(tableType);

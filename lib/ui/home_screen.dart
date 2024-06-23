@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/const_images.dart';
+import '../data/adminLog.dart';
 import '../data/csv_data.dart';
 import '../data/db.dart';
 import '../utils/utils.dart';
@@ -43,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_isFirstTime) {
       print("First time");
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   _showInputDialog(context);
-      // });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showInputDialog(context);
+      });
       prefs.setBool('isFirstTime', false);
     } else {
       print("Not first time");
@@ -74,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await dbHelper.insertCsvData(csvData, testType);
 
         print("Data saved to db");
-
+        adminLogCall("CSV imported");
         Navigator.push(
           context,
           MaterialPageRoute(

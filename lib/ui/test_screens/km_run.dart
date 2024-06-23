@@ -37,7 +37,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
   bool _filterValue = false;
   bool _runOptionValue = false;
   bool isTimerRunning = false;
-  Duration duration = const Duration(seconds: 0);
+  Duration duration = const Duration(milliseconds: 0);
   Timer? timer;
 
   bool isLoading = true;
@@ -92,10 +92,10 @@ class _KmRunScreenState extends State<KmRunScreen> {
       isTimerRunning = true;
       // duration = const Duration(seconds: 0);
     });
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
-        final seconds = duration.inSeconds + 1;
-        duration = Duration(seconds: seconds);
+        final milliseconds = duration.inMilliseconds + 10;
+        duration = Duration(milliseconds: milliseconds);
       });
     });
   }
@@ -111,7 +111,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
     setState(() {
       isTimerRunning = false;
       timer?.cancel();
-      duration = const Duration(seconds: 0);
+      duration = const Duration(milliseconds: 0);
     });
   }
 
@@ -126,18 +126,18 @@ class _KmRunScreenState extends State<KmRunScreen> {
     return true;
   }
 
-  Future<void> _storeDataInDb(List<Student> students) async {
-    print("Size: ${students.length}");
-    for (var student in students) {
-      print(
-          "Storing data in the database for student: ${student.regNo} \t ${student.level} \t ${student.runTime}");
-    }
+  // Future<void> _storeDataInDb(List<Student> students) async {
+  //   print("Size: ${students.length}");
+  //   for (var student in students) {
+  //     print(
+  //         "Storing data in the database for student: ${student.regNo} \t ${student.level} \t ${student.runTime}");
+  //   }
+  //
+  //   //Store the data in the database
+  //   await DatabaseHelper.instance.saveStudents(students, widget.testType);
+  // }
 
-    //Store the data in the database
-    await DatabaseHelper.instance.saveStudents(students, widget.testType);
-  }
-
-  void _handleStudentSelection(Student student) {
+  void _handleStudentSelection(Student student) async {
     int maxLevel =
         _runOptionValue ? 6 : 4; // Determine max level based on run option
     if (student.level == maxLevel) {
@@ -150,6 +150,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
     setState(() {
       _selectedRegNo = student.regNo;
       selectedColors.putIfAbsent(student.regNo, () => const Color(0xffF1F1F1));
+    });
 
       // Increment lap level only if it's less than the max level
       if (student.level < maxLevel && student.level >= 0) {
@@ -169,19 +170,23 @@ class _KmRunScreenState extends State<KmRunScreen> {
 
             selectedStudents[index] = student.copyWith(
               runTime: selectedStudents != null && selectedStudents.isNotEmpty && selectedStudents[index].level == maxLevel
-                  ? duration.inSeconds : student.runTime,
+                  ? duration.inMilliseconds~/1000 : student.runTime,
             );
             selectedStudent = selectedStudents[index];
             mainStudentList[indexMain] = selectedStudents[index];
+            if(selectedStudents[index].level == maxLevel){
+              // Update the time in the database
+              await DatabaseHelper.instance.updateKmRun(mainStudentList[indexMain].regNo, selectedStudents[index].runTime,widget.testType);
+            }
           }
         }
       }
 
       if (_checkAllStudentsOnLastLap() && !dataStored) {
         dataStored = true;
-        _storeDataInDb(_getSelectedClassStudentsMain()!);
+        // _storeDataInDb(_getSelectedClassStudentsMain()!);
       }
-    });
+    // });
   }
 
   void _handleUndo() {
@@ -453,7 +458,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 500,
+                height: 200,
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -469,7 +474,10 @@ class _KmRunScreenState extends State<KmRunScreen> {
                         const Color(0xffF1F1F1);
 
                     return GestureDetector(
-                      onTap: () => _handleStudentSelection(student),
+                      // onTap: () => _handleStudentSelection(student),
+                      onTap: () async {
+                        _handleStudentSelection(student);
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                           color: boxColor,
@@ -601,7 +609,9 @@ class _KmRunScreenState extends State<KmRunScreen> {
                 padding: const EdgeInsets.all(28.0),
                 child: Center(
                   child: Text(
-                    '${duration.inHours.toString().padLeft(2, '0')}:${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                    '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:'
+                        '${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}:'
+                    '${(duration.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0')}',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
