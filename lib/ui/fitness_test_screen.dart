@@ -6,6 +6,7 @@ import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pt_app/ui/test_screens/km_run.dart';
@@ -46,6 +47,7 @@ class FitnessTestScreen extends StatefulWidget {
 class _FitnessTestScreenState extends State<FitnessTestScreen> {
   // const FitnessTestScreen({Key? key});
   bool _isLoading = false;
+  final Connectivity _connectivity = Connectivity();
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           await dbHelper.insertCsvData(csvData, widget.testType);
 
           List<CsvData> importedData =
-          await dbHelper.getAllCsvData(widget.testType);
+              await dbHelper.getAllCsvData(widget.testType);
           setState(() {
             csvData = importedData;
           });
@@ -93,9 +95,9 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
   Future<void> parseCsv(String filePath) async {
     String csvString = await File(filePath).readAsString();
     List<List<dynamic>> rowsAsListOfValues =
-    const CsvToListConverter().convert(csvString);
+        const CsvToListConverter().convert(csvString);
     List<CsvData> parsedData =
-    rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
+        rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
     setState(() {
       csvData = parsedData;
     });
@@ -109,10 +111,10 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
   Future<List<Class>> fetchClassesFromDatabase() async {
     Map<String, List<CsvData>> studentDataByClass =
-    await DatabaseHelper.instance.getCsvDataGroupedByClass(widget.testType);
+        await DatabaseHelper.instance.getCsvDataGroupedByClass(widget.testType);
     List<Class> classes = studentDataByClass.entries.map((entry) {
       List<Student> students =
-      entry.value.map((csvData) => Student.fromCsvData(csvData)).toList();
+          entry.value.map((csvData) => Student.fromCsvData(csvData)).toList();
       return Class(className: entry.key, students: students);
     }).toList();
     return classes;
@@ -132,104 +134,154 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           padding: const EdgeInsets.all(8.0),
           child: _isLoading
               ? const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-            ),
-          )
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  ),
+                )
               : Column(
-            children: [
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 4.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 2 / 1,
-                  children: choices
-                      .map((e) =>
-                      SelectCard(
-                          choice: e,
-                          onSelect: _onSelectTest,
-                          testType: widget.testType))
-                      .toList(),
+                  children: [
+                    Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 4.0,
+                        mainAxisSpacing: 8.0,
+                        childAspectRatio: 2 / 1,
+                        children: choices
+                            .map((e) => SelectCard(
+                                choice: e,
+                                onSelect: _onSelectTest,
+                                testType: widget.testType))
+                            .toList(),
+                      ),
+                    ),
+                    // Sync & Report Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffF1F1F1),
+                              ),
+                              onPressed: () async {
+                                final List<ConnectivityResult> result =
+                                    await _connectivity.checkConnectivity();
+                                if (result[0] == ConnectivityResult.none) {
+                                  print('No Internet Connection!');
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Internet Connectivity!'),
+                                        content:
+                                            Text('No Internet Connection!'),
+                                        actions: [
+                                          TextButton(
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  print('Have Internet Connection!');
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  if (widget.testType == 1 &&
+                                      prefs.getBool('activatedUser') == false) {
+                                    print('User Not Activated!');
+                                  } else {
+                                    syncData();
+                                  }
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/sync.png',
+                                    width: 24,
+                                    height: 24,
+                                    color: Colors.black,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text('Sync',
+                                      style: TextStyle(color: Colors.black)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff00C485),
+                              ),
+                              onPressed: () async {
+                                final List<ConnectivityResult> result =
+                                    await _connectivity.checkConnectivity();
+                                if (result[0] == ConnectivityResult.none) {
+                                  print('No Internet Connection!');
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Internet Connectivity!'),
+                                        content:
+                                            Text('No Internet Connection!'),
+                                        actions: [
+                                          TextButton(
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  print('Have Internet Connection!');
+
+                                  // checkActivation(context,widget.testType, false);
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  if (widget.testType == 1 &&
+                                      prefs.getBool('activatedUser') == false) {
+                                    print('User Not Activated!');
+                                  } else {
+                                    generateReport();
+                                  }
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/report.png',
+                                    width: 24,
+                                    height: 24,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text('Report',
+                                      style: TextStyle(color: Colors.white)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              // Sync & Report Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffF1F1F1),
-                        ),
-                        onPressed: () async {
-                          SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                          if (widget.testType == 1 &&
-                              prefs.getBool('activatedUser') == false) {
-                            print('User Not Activated!');
-                          } else {
-                            syncData();
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/sync.png',
-                              width: 24,
-                              height: 24,
-                              color: Colors.black,
-                            ),
-                            const SizedBox(width: 8),
-                            const Text('Sync',
-                                style: TextStyle(color: Colors.black)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff00C485),
-                        ),
-                        onPressed: () async {
-                          // checkActivation(context,widget.testType, false);
-                          SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                          if (widget.testType == 1 &&
-                              prefs.getBool('activatedUser') == false) {
-                            print('User Not Activated!');
-                          } else {
-                            generateReport();
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/report.png',
-                              width: 24,
-                              height: 24,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 8),
-                            const Text('Report',
-                                style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
       routes: {
@@ -253,8 +305,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     );
   }
 
-  Future<void> checkActivation(BuildContext context, int testType,
-      bool flag) async {
+  Future<void> checkActivation(
+      BuildContext context, int testType, bool flag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (testType == 1 && prefs.getBool('activatedUser') == false) {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -400,8 +452,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
           print('Generate report successful!!!');
           adminLogCall("Report Generated");
-          List<CsvData> importedData = await dbHelper.getAllCsvData(
-              widget.testType);
+          List<CsvData> importedData =
+              await dbHelper.getAllCsvData(widget.testType);
 
           setState(() {
             csvData = importedData;
@@ -413,21 +465,21 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           // if (widget.testType == 1) {
           //   await _generateCSV(csvData, context);
           // } else {
-            // Navigate to the MockTestReportScreen
-            Future.delayed(Duration.zero, () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MockTestReportScreen(csvData, widget.testType),
-                ),
-              );
-            });
+          // Navigate to the MockTestReportScreen
+          Future.delayed(Duration.zero, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    MockTestReportScreen(csvData, widget.testType),
+              ),
+            );
+          });
           // }
         } else {
           Navigator.of(context).pop(); // Close the dialog in case of error
           print(
-              'Failed to generate report!!!\n${response.statusCode}\n${response
-                  .body}');
+              'Failed to generate report!!!\n${response.statusCode}\n${response.body}');
         }
       } catch (e) {
         Navigator.of(context).pop();
@@ -455,32 +507,272 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     }
   }
 
-
-  Future<void> _generateCSV(List<CsvData> dataList,
-      BuildContext context) async {
+  Future<void> _generateCSV(
+      List<CsvData> dataList, BuildContext context) async {
     try {
       List<List<dynamic>> rows = [];
 
-      rows.add(['Instruction:', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['1. Please do not delete any Rows or columns. You can upload the partially filled data.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     The system will validate and if there are any errors the system will promot and will automatically update the records without error.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['2. When the downloaded file is re-uploaded existing values will be replaced with the new values.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['3. Attendance status should be one of the following values (P/A/L/O/H/E)', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     P - Present', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     A - Absent', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     L - Long Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     O - Short Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     E - Special Case', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     H - Pending appointment Student Health Services', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['4. Please save your updated file in CSV(Comma delimited) format only.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['5.  The value of Sit Up reps should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['6.  The value of Broad Jump should be numeric and it can be up to 3 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['7.  The value of Sit& Reach should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['8.  The value of IPU/Push-up reps should be numeric and it can be up to 2 digits. (Applicable for PRE-U)', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['9.  The value of IPU/Pull-up reps should be numeric and it can be up to 2 digits. ', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['10. The value of Shuttle Run time should be numeric and it has to be either 2 or 3 digits with 1 decimal place allowed', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['11. The value of 1.6/2.4 km Run should be numeric and it has to be either 3 or 4 digits e.g. 10 Minutes and 45 seconds will be entered as 1045', '', '', '', '', '', '', '', '', '', '', '', '']);
-      rows.add(['     another example 9 minute 45 seconds will be entered as 945', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(
+          ['Instruction:', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add([
+        '1. Please do not delete any Rows or columns. You can upload the partially filled data.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '     The system will validate and if there are any errors the system will promot and will automatically update the records without error.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '2. When the downloaded file is re-uploaded existing values will be replaced with the new values.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '3. Attendance status should be one of the following values (P/A/L/O/H/E)',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add(
+          ['     P - Present', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(
+          ['     A - Absent', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add([
+        '     L - Long Term MC',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '     O - Short Term MC',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '     E - Special Case',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '     H - Pending appointment Student Health Services',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '4. Please save your updated file in CSV(Comma delimited) format only.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '5.  The value of Sit Up reps should be numeric and it can be up to 2 digits.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '6.  The value of Broad Jump should be numeric and it can be up to 3 digits.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '7.  The value of Sit& Reach should be numeric and it can be up to 2 digits.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '8.  The value of IPU/Push-up reps should be numeric and it can be up to 2 digits. (Applicable for PRE-U)',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '9.  The value of IPU/Pull-up reps should be numeric and it can be up to 2 digits. ',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '10. The value of Shuttle Run time should be numeric and it has to be either 2 or 3 digits with 1 decimal place allowed',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '11. The value of 1.6/2.4 km Run should be numeric and it has to be either 3 or 4 digits e.g. 10 Minutes and 45 seconds will be entered as 1045',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+      rows.add([
+        '     another example 9 minute 45 seconds will be entered as 945',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
 
       // Add header row
       rows.add([
@@ -510,7 +802,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
           data.gender,
           data.dob,
           data.attendanceStatus,
-          data.sitUpReps == -1 ? "" : data.sitUpReps ,
+          data.sitUpReps == -1 ? "" : data.sitUpReps,
           data.broadJumpCm == -1 ? "" : data.broadJumpCm,
           data.sitAndReachCm == -1 ? "" : data.sitAndReachCm,
           data.pullUpReps == -1 ? "" : data.pullUpReps,
@@ -530,9 +822,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
         // check if Android version is 14 or above
         if (sdkInt < 34) {
-          isGranted = await Permission.storage
-              .request()
-              .isGranted;
+          isGranted = await Permission.storage.request().isGranted;
         }
 
         if (isGranted) {
@@ -579,7 +869,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Success'),
-            content: Text('report.csv generated successfully at Downloads folder.'),
+            content:
+                Text('report.csv generated successfully at Downloads folder.'),
             actions: [
               TextButton(
                 child: Text('OK'),
@@ -601,7 +892,10 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 const List<Choice> choices = <Choice>[
   Choice(title: 'Sit Up', asset: KImages.sitUp, route: '/sitUp'),
   Choice(title: 'Broad Jump', asset: KImages.broadJump, route: '/broadJump'),
-  Choice(title: 'Sit and Reach', asset: KImages.sitAndReach, route: '/sitAndReach'),
+  Choice(
+      title: 'Sit and Reach',
+      asset: KImages.sitAndReach,
+      route: '/sitAndReach'),
   Choice(title: 'Pull Up', asset: KImages.pullUp, route: '/pullUp'),
   Choice(title: 'Shuttle Run', asset: KImages.shuttleRun, route: '/shuttleRun'),
   Choice(title: '1.6km/2.4km Run', asset: KImages.kmRun, route: '/run'),
