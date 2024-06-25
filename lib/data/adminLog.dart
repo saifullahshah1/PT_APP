@@ -9,7 +9,7 @@ Future<void> adminLogCall(String adminLog) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String schoolId = prefs.getString('schoolId') ?? '';
-  String path = "https://13.49.228.139/api/schools/$schoolId/adminlogs";
+  String path = "http://51.20.95.159/api/schools/$schoolId/adminlogs";
 
   final response = await http.post(
     Uri.parse(path),
@@ -36,7 +36,7 @@ Future<void> getAllAdminLogs(String adminLog) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String schoolId = prefs.getString('schoolId') ?? '';
-  String path = "https://13.49.228.139/api/schools/$schoolId/adminlogs";
+  String path = "http://51.20.95.159/api/schools/$schoolId/adminlogs";
 
   final response = await http.get(
     Uri.parse(path),

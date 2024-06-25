@@ -11,11 +11,13 @@ import '../data/csv_data.dart';
 import '../model/class.dart';
 import '../model/student.dart';
 import 'fitness_test_screen.dart'; // For firstWhereOrNull extension
+import 'package:device_info_plus/device_info_plus.dart';
 
 class MockTestReportScreen extends StatefulWidget {
   final List<CsvData> csvData;
+  final int testType;
 
-  MockTestReportScreen(this.csvData, {Key? key}) : super(key: key);
+  MockTestReportScreen(this.csvData, this.testType, {Key? key}) : super(key: key);
 
   @override
   _MockTestReportScreenState createState() => _MockTestReportScreenState();
@@ -104,7 +106,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mock Test Screen'),
+        title: Text(widget.testType == 1 ? "Test Results Screen" : 'Mock Test Results Screen'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -112,7 +114,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
             onPressed: () {
               // Implement the action when the button is pressed
               // For example, navigate to another screen, show a dialog, etc.
-              _generateCSV(widget.csvData, context);
+              _generateCSV(widget.csvData, widget.testType, context);
             },
           ),
         ],
@@ -307,12 +309,35 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
   }
 
   Future<void> _generateCSV(List<CsvData> dataList,
+      int testType,
       BuildContext context) async {
     try {
       List<List<dynamic>> rows = [];
 
+      rows.add(['Instruction:', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['1. Please do not delete any Rows or columns. You can upload the partially filled data.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     The system will validate and if there are any errors the system will promot and will automatically update the records without error.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['2. When the downloaded file is re-uploaded existing values will be replaced with the new values.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['3. Attendance status should be one of the following values (P/A/L/O/H/E)', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     P - Present', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     A - Absent', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     L - Long Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     O - Short Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     E - Special Case', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     H - Pending appointment Student Health Services', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['4. Please save your updated file in CSV(Comma delimited) format only.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['5.  The value of Sit Up reps should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['6.  The value of Broad Jump should be numeric and it can be up to 3 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['7.  The value of Sit& Reach should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['8.  The value of IPU/Push-up reps should be numeric and it can be up to 2 digits. (Applicable for PRE-U)', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['9.  The value of IPU/Pull-up reps should be numeric and it can be up to 2 digits. ', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['10. The value of Shuttle Run time should be numeric and it has to be either 2 or 3 digits with 1 decimal place allowed', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['11. The value of 1.6/2.4 km Run should be numeric and it has to be either 3 or 4 digits e.g. 10 Minutes and 45 seconds will be entered as 1045', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     another example 9 minute 45 seconds will be entered as 945', '', '', '', '', '', '', '', '', '', '', '', '']);
+
       // Add header row
       rows.add([
+        'No',
         'Name',
         'ID',
         'Class',
@@ -331,6 +356,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
       // Add data rows
       dataList.forEach((data) {
         rows.add([
+          data.no,
           data.name,
           data.id,
           data.classVal,
@@ -350,8 +376,20 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
       // Get external storage directory (Android) or documents directory (iOS)
       Directory? directory;
       if (Platform.isAndroid) {
-        // Request storage permissions
-        if (await Permission.storage.request().isGranted) {
+
+        var isGranted = true;
+
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        var sdkInt = androidInfo.version.sdkInt;
+
+        // check if Android version is lower than 14
+        if (sdkInt < 34) {
+          isGranted = await Permission.storage
+              .request()
+              .isGranted;
+        }
+
+        if (isGranted) {
           directory = await getExternalStorageDirectory();
           if (directory != null) {
             String newPath = '';
@@ -380,7 +418,7 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
       if (directory == null) return; // Handle if directory is null
 
       // Create file path
-      String filePath = '${directory.path}/mock_report.csv';
+      String filePath = testType == 1 ? '${directory.path}/report.csv' : '${directory.path}/mock_report.csv';
 
       // Write CSV to file
       File csvFile = File(filePath);
@@ -389,6 +427,23 @@ class _MockTestReportScreenState extends State<MockTestReportScreen> {
 
       // Show a message or perform any other action after CSV generation
       print('CSV generated successfully at: $filePath');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text(testType == 1 ? 'report.csv generated successfully at Downloads folder.' : 'mock_report.csv generated successfully at Downloads folder.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print('Error generating CSV: $e');
       // Handle error as needed

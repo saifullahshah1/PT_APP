@@ -458,7 +458,7 @@ class _KmRunScreenState extends State<KmRunScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200,
+                height: 350,
                 child: GridView.builder(
                   itemCount: _getSelectedClassStudents()?.length ?? 0,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'data/db.dart';
 import 'sp/SharedPreferencesHelper.dart';
 import 'ui/home_screen.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
 
@@ -36,6 +37,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'PT App',
       theme: ThemeData(

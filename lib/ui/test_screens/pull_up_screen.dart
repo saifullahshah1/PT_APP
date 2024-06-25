@@ -28,7 +28,7 @@ class _PullUpScreenState extends State<PullUpScreen> {
   final TextEditingController _repsController = TextEditingController();
 
   bool isTimerRunning = false;
-  Duration duration = const Duration(minutes: 1);
+  Duration duration = const Duration(seconds: 30);
   Timer? timer;
 
   bool isLoading = true; // Add this flag
@@ -809,7 +809,7 @@ class _PullUpScreenState extends State<PullUpScreen> {
   void resetTimer() {
     stopTimer();
     setState(() {
-      duration = Duration(minutes: 1);
+      duration = Duration(seconds: 30);
     });
   }
 

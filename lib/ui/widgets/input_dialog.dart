@@ -61,50 +61,84 @@ class _InputDialogState extends State<InputDialog> {
   }
 
   void validateLicense(String key) async {
-    const path = "https://13.49.228.139/api/licenses/check/";
-
-    final response = await http.post(
-      Uri.parse(path + key),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Dialog(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+                SizedBox(width: 16),
+                Text("Validating license..."),
+              ],
+            ),
+          ),
+        );
       },
-      body: jsonEncode({
-        'deviceName': _deviceName.toString(),
-      }),
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final responseData = jsonDecode(response.body);
+    try {
+      const path = "http://51.20.95.159/api/licenses/check/";
 
-      String licenseId = responseData['licenseId'];
-      String schoolId = responseData['schoolId'];
-      String issuedDate = responseData['issuedDate'];
-      String expiryDate = responseData['expiryDate'];
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('activatedUser', true);
-      await prefs.setString('licenseId', licenseId);
-      await prefs.setString('schoolId', schoolId);
-      await prefs.setString('issuedDate', issuedDate);
-      await prefs.setString('expiryDate', expiryDate);
-
-      print(prefs.getString('licenseId') ?? '');
-      print(prefs.getString('schoolId') ?? '');
-      print(prefs.getString('issuedDate') ?? '');
-      print(prefs.getString('expiryDate') ?? '');
-
-      print('License Validated');
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Activated!')),
+      final response = await http.post(
+        Uri.parse(path + key),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'deviceName': _deviceName.toString(),
+        }),
       );
-    } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('activatedUser', false);
-      print('Failed to validate license');
+
+      Navigator.of(context).pop();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+
+        String licenseId = responseData['licenseId'];
+        String schoolId = responseData['schoolId'];
+        String issuedDate = responseData['issuedDate'];
+        String expiryDate = responseData['expiryDate'];
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('activatedUser', true);
+        await prefs.setString('licenseId', licenseId);
+        await prefs.setString('schoolId', schoolId);
+        await prefs.setString('issuedDate', issuedDate);
+        await prefs.setString('expiryDate', expiryDate);
+
+        print(prefs.getString('licenseId') ?? '');
+        print(prefs.getString('schoolId') ?? '');
+        print(prefs.getString('issuedDate') ?? '');
+        print(prefs.getString('expiryDate') ?? '');
+
+        print('License Validated');
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Activated!')),
+        );
+      } else {
+        print(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('activatedUser', false);
+        print('Failed to validate license');
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to validate license')),
+        );
+      }
+    } catch (e) {
+      print(e);
+      Navigator.of(context).pop();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to validate license')),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }
@@ -126,7 +160,7 @@ class _InputDialogState extends State<InputDialog> {
     } catch (e) {
       deviceName = 'Failed to get device name';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Network error: Please check your connection')),
+        SnackBar(content: Text(e.toString())),
       );
     }
 

@@ -24,6 +24,7 @@ import 'test_screens/pull_up_screen.dart';
 import 'test_screens/shuttle_run.dart';
 import 'test_screens/sit_and_reach_screen.dart';
 import 'test_screens/sit_up_screen.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 List<Class> classes = [];
 
@@ -292,8 +293,8 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
     if (schoolId != '') {
       final path = (widget.testType == 1)
-          ? "https://13.49.228.139/api/schools/$schoolId/students"
-          : "https://13.49.228.139/api/schools/$schoolId/mock/students";
+          ? "http://51.20.95.159/api/schools/$schoolId/students"
+          : "http://51.20.95.159/api/schools/$schoolId/mock/students";
 
       List<Map<String, dynamic>> studentsData = [];
 
@@ -370,62 +371,83 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
     if (schoolId != '') {
       final path = (widget.testType == 1)
-          ? "http://13.49.228.139:5000/api/schools/$schoolId/students/"
-          : "http://13.49.228.139:5000/api/schools/$schoolId/mock/students";
+          ? "http://51.20.95.159/api/schools/$schoolId/students/"
+          : "http://51.20.95.159/api/schools/$schoolId/mock/students";
 
-      final response = await http.get(
-        Uri.parse(path),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      try {
+        final response = await http.get(
+          Uri.parse(path),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          final List<dynamic> responseData = jsonDecode(response.body);
 
-        List<CsvData> dataList = [];
+          List<CsvData> dataList = [];
 
-        for (var studentJson in responseData) {
-          if (studentJson.containsKey('uploadDate')) {
-            studentJson.remove('uploadDate');
+          for (var studentJson in responseData) {
+            if (studentJson.containsKey('uploadDate')) {
+              studentJson.remove('uploadDate');
+            }
+            CsvData student = CsvData.fromList2(studentJson);
+            dataList.add(student);
           }
-          CsvData student = CsvData.fromList2(studentJson);
-          dataList.add(student);
-        }
 
-        final dbHelper = DatabaseHelper.instance;
-        await dbHelper.insertCsvData(dataList, widget.testType);
+          final dbHelper = DatabaseHelper.instance;
+          await dbHelper.insertCsvData(dataList, widget.testType);
 
-        print('Generate report successful!!!');
-        adminLogCall("Report Generated");
-        List<CsvData> importedData = await dbHelper.getAllCsvData(
-            widget.testType);
+          print('Generate report successful!!!');
+          adminLogCall("Report Generated");
+          List<CsvData> importedData = await dbHelper.getAllCsvData(
+              widget.testType);
 
-        setState(() {
-          csvData = importedData;
-        });
-
-        classes = await fetchClassesFromDatabase();
-
-        Navigator.of(context).pop(); // Close the dialog
-        if (widget.testType == 1) {
-          await _generateCSV(csvData, context);
-        } else {
-          // Navigate to the MockTestReportScreen
-          Future.delayed(Duration.zero, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MockTestReportScreen(csvData),
-              ),
-            );
+          setState(() {
+            csvData = importedData;
           });
+
+          classes = await fetchClassesFromDatabase();
+
+          Navigator.of(context).pop(); // Close the dialog
+          // if (widget.testType == 1) {
+          //   await _generateCSV(csvData, context);
+          // } else {
+            // Navigate to the MockTestReportScreen
+            Future.delayed(Duration.zero, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MockTestReportScreen(csvData, widget.testType),
+                ),
+              );
+            });
+          // }
+        } else {
+          Navigator.of(context).pop(); // Close the dialog in case of error
+          print(
+              'Failed to generate report!!!\n${response.statusCode}\n${response
+                  .body}');
         }
-      } else {
-        Navigator.of(context).pop(); // Close the dialog in case of error
-        print(
-            'Failed to generate report!!!\n${response.statusCode}\n${response
-                .body}');
+      } catch (e) {
+        Navigator.of(context).pop();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Oh no,,,!'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
     } else {
       Navigator.of(context).pop(); // Close the dialog in case of error
@@ -439,8 +461,30 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
     try {
       List<List<dynamic>> rows = [];
 
+      rows.add(['Instruction:', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['1. Please do not delete any Rows or columns. You can upload the partially filled data.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     The system will validate and if there are any errors the system will promot and will automatically update the records without error.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['2. When the downloaded file is re-uploaded existing values will be replaced with the new values.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['3. Attendance status should be one of the following values (P/A/L/O/H/E)', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     P - Present', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     A - Absent', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     L - Long Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     O - Short Term MC', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     E - Special Case', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     H - Pending appointment Student Health Services', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['4. Please save your updated file in CSV(Comma delimited) format only.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['5.  The value of Sit Up reps should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['6.  The value of Broad Jump should be numeric and it can be up to 3 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['7.  The value of Sit& Reach should be numeric and it can be up to 2 digits.', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['8.  The value of IPU/Push-up reps should be numeric and it can be up to 2 digits. (Applicable for PRE-U)', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['9.  The value of IPU/Pull-up reps should be numeric and it can be up to 2 digits. ', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['10. The value of Shuttle Run time should be numeric and it has to be either 2 or 3 digits with 1 decimal place allowed', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['11. The value of 1.6/2.4 km Run should be numeric and it has to be either 3 or 4 digits e.g. 10 Minutes and 45 seconds will be entered as 1045', '', '', '', '', '', '', '', '', '', '', '', '']);
+      rows.add(['     another example 9 minute 45 seconds will be entered as 945', '', '', '', '', '', '', '', '', '', '', '', '']);
+
       // Add header row
       rows.add([
+        'No',
         'Name',
         'ID',
         'Class',
@@ -459,6 +503,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       // Add data rows
       dataList.forEach((data) {
         rows.add([
+          data.no,
           data.name,
           data.id,
           data.classVal,
@@ -478,8 +523,19 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
       // Get external storage directory (Android) or documents directory (iOS)
       Directory? directory;
       if (Platform.isAndroid) {
-        // Request storage permissions
-        if (await Permission.storage.request().isGranted) {
+        var isGranted = true;
+
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        var sdkInt = androidInfo.version.sdkInt;
+
+        // check if Android version is 14 or above
+        if (sdkInt < 34) {
+          isGranted = await Permission.storage
+              .request()
+              .isGranted;
+        }
+
+        if (isGranted) {
           directory = await getExternalStorageDirectory();
           if (directory != null) {
             String newPath = '';
@@ -495,7 +551,7 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
             newPath = newPath + '/Download';
             directory = Directory(newPath);
           }
-        }else {
+        } else {
           // Handle the case where permissions are denied
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Permission denied to access storage')),
@@ -517,6 +573,24 @@ class _FitnessTestScreenState extends State<FitnessTestScreen> {
 
       // Show a message or perform any other action after CSV generation
       print('CSV generated successfully at: $filePath');
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('report.csv generated successfully at Downloads folder.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print('Error generating CSV: $e');
       // Handle error as needed

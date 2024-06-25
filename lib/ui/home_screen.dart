@@ -44,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_isFirstTime) {
       print("First time");
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showInputDialog(context);
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   _showInputDialog(context);
+      // });
       prefs.setBool('isFirstTime', false);
     } else {
       print("Not first time");
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<List<dynamic>> rowsAsListOfValues =
     const CsvToListConverter().convert(csvString);
     List<CsvData> parsedData =
-    rowsAsListOfValues.skip(1).map((row) => CsvData.fromList(row)).toList();
+    rowsAsListOfValues.skip(21).map((row) => CsvData.fromList(row)).toList();
     return parsedData;
   }
 

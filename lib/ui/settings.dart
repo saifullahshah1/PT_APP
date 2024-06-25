@@ -44,10 +44,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 } else if (snapshot.hasData && snapshot.data!) {
                   return ElevatedButton(
                     onPressed: () async {
-                      await _deactivationApiCall();
-                      setState(() {
-                        _activationStatus = _checkUserActivation();
-                      });
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirm Deactivation'),
+                            content: Text('Are you sure you want to deactivate?'),
+                            actions: [
+                              TextButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('Deactivate'),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await _deactivationApiCall();
+                                  setState(() {
+                                    _activationStatus = _checkUserActivation();
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.all(20),
@@ -109,13 +132,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 } else {
                   return ElevatedButton(
                     onPressed: () async {
-                      bool cleared = await DatabaseHelper.instance.clearDatabase();
-                      if (cleared) {
-                        adminLogCall("Records deleted");
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Database cleared successfully!')),
-                        );
-                      }
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirm Deletion'),
+                            content: Text('Are you sure you want to delete?'),
+                            actions: [
+                              TextButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('Delete'),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  bool cleared = await DatabaseHelper.instance.clearDatabase();
+                                  if (cleared) {
+                                    adminLogCall("Records deleted");
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Database cleared successfully!')),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.all(20),
@@ -184,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String schoolId = prefs.getString('schoolId') ?? '';
     String issuedDate = prefs.getString('issuedDate') ?? '';
     String expiryDate = prefs.getString('expiryDate') ?? '';
-    String path = "https://13.49.228.139/api/schools/$schoolId/licenses/$licenseId";
+    String path = "http://51.20.95.159/api/schools/$schoolId/licenses/$licenseId";
 
     final response = await http.put(
       Uri.parse(path),
@@ -193,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
       body: jsonEncode({
         // 'status': "deactivate",
-        'deviceName': "none",
+        'deviceName': "N/A",
         'issuedDate': issuedDate,
         'expiryDate': expiryDate,
       }),
